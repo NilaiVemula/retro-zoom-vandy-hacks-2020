@@ -26,6 +26,7 @@ class Logger:
             with open(f'productivity_data_{datetime.date.today()}.json', 'r+') as f:
                 current_data = json.load(f)
                 self.time_data['End_Date_Time'] = str(datetime.datetime.now())
+                self.updateTimeSpent()
                 self.update_json()
 
     def updateTimeSpent(self):
@@ -65,3 +66,12 @@ class Logger:
             f.seek(0)
             f.truncate()
             json.dump(current_data, f)
+
+if __name__ == "__main__":
+    logger1 = Logger()
+    logger1.startTimer()
+    logger1.log_emotion('Happy')
+    time.sleep(10)
+    logger1.log_emotion('Sad')
+    logger1.log_emotion('Sad')
+    logger1.endTimer()
