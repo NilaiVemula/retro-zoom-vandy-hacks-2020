@@ -118,9 +118,9 @@ class Control:
                 cv2.putText(raw_frame, self.face_sentiment, (50, 100), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=2,
                             color=(0, 0, 255))
                 
-                if self.face_sentiment is 'joy':
+                if self.face_sentiment == 'joy':
                     self.progress_count = self.progress_count+1
-                if self.progress_count is 250 :
+                if self.progress_count == 250 :
                     self.progress_count = 1
                     self.coin_count = self.coin_count+1
 
