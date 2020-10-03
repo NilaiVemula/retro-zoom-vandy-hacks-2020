@@ -3,6 +3,7 @@ import pyvirtualcam
 import numpy as np
 import processing
 from concurrent.futures import ThreadPoolExecutor
+from pynput import keyboard
 
 
 class Control:
@@ -45,13 +46,28 @@ class Control:
         
         # start a thread to call the google cloud api and get the sentiment from the frames
         self.executor = ThreadPoolExecutor(max_workers=1)
-        self.future_call = self.executor.submit(processing.face_sentiment,None)
+        self.future_call = self.executor.submit(processing.face_sentiment, None)
+
+        self.key_pressed = ''
+
+    def on_press(self, key):
+        try:
+            # alphanumeric key
+            if key.char == 'c':
+                self.key_pressed = 'c'
+        except AttributeError:
+            # special key
+            pass
 
     def run(self):
         """ contains main while loop to constantly capture webcam, process, and output
 
         :return: None
         """
+
+        listener = keyboard.Listener(on_press=self.on_press)
+        listener.start()  # start to listen for key presses on a separate thread
+
         with pyvirtualcam.Camera(width=self.width, height=self.height, fps=self.fps) as virtual_cam:
             # print status
             print(
@@ -65,6 +81,11 @@ class Control:
                 ret, raw_frame = self.cam.read()
 
                 # STEP 2: process frames
+
+                # check key presses
+                if self.key_pressed == 'c':
+                    print('coin game has started')
+                    self.key_pressed = ''
 
                 # detect face position
                 if frame_count % 3:
@@ -80,11 +101,6 @@ class Control:
 
                     self.face_sentiment = self.future_call.result()
                     self.future_call = self.executor.submit(processing.face_sentiment,raw_frame)
-                
-                # detect face sentiment
-                #if frame_count == 60:
-                #    self.face_sentiment = processing.face_sentiment(raw_frame)
-                #    frame_count = 0
 
                 # write sentiment
                 cv2.putText(raw_frame, self.face_sentiment, (50, 50), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=2,
