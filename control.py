@@ -63,6 +63,9 @@ class Control:
 
         # coinGame object
         self.coin_game = CoinGame(self.width,self.height)
+        
+        self.coin_count = 0
+        self.progress_count = 1
 
     def run(self):
         """ contains main while loop to constantly capture webcam, process, and output
@@ -111,8 +114,44 @@ class Control:
                 
 
                 # write sentiment
-                cv2.putText(raw_frame, self.face_sentiment, (50,150), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=2,
+                cv2.putText(raw_frame, self.face_sentiment, (50, 100), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=2,
                             color=(0, 0, 255))
+                
+                if self.face_sentiment is 'joy':
+                    self.progress_count = self.progress_count+1
+                if self.progress_count is 250 :
+                    self.progress_count = 1
+                    self.coin_count = self.coin_count+1
+
+
+                pl_img = cv2.imread('assets\pipeline.png', cv2.IMREAD_UNCHANGED)
+                pl_img = cv2.resize(pl_img, (int(100*self.progress_count/100),100), interpolation = cv2.INTER_AREA)
+                x_offset=y_offset=50
+                y1, y2 = y_offset, y_offset + pl_img.shape[0]
+                x1, x2 = x_offset, x_offset + pl_img.shape[1]
+
+                alpha_s = pl_img[:, :, 3] / 255.0
+                alpha_l = 1.0 - alpha_s
+
+                for c in range(0, 3):
+                    raw_frame[y1:y2, x1:x2, c] = (alpha_s * pl_img[:, :, c] +
+                              alpha_l * raw_frame[y1:y2, x1:x2, c])
+
+                cv2.putText(raw_frame, str(self.coin_count), (500, 100), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0,0,0))
+
+                coin_img = cv2.imread('assets\coin.png', cv2.IMREAD_UNCHANGED)
+                x_offset=550
+                y_offset=75
+                y1, y2 = y_offset, y_offset + coin_img.shape[0]
+                x1, x2 = x_offset, x_offset + coin_img.shape[1]
+
+                alpha_s = coin_img[:, :, 3] / 255.0
+                alpha_l = 1.0 - alpha_s
+
+                for c in range(0, 3):
+                    raw_frame[y1:y2, x1:x2, c] = (alpha_s * coin_img[:, :, c] +
+                              alpha_l * raw_frame[y1:y2, x1:x2, c])
+                
 
                 # flip image so that it shows up properly in Zoom
                 # raw_frame = cv2.flip(raw_frame, 1)
