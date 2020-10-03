@@ -9,6 +9,12 @@ if __name__ == '__main__':
         # Capture frame-by-frame
         ret, frame = cap.read()
 
+        width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        fps = cap.get(cv2.CAP_PROP_FPS)
+
+        print(width, height, fps)
+
         # Our operations on the frame come here (convert to gray scale)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
