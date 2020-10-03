@@ -59,6 +59,10 @@ class Control:
         self.progress_count = 1
 
 
+        # coinGame object
+        self.coin_game = CoinGame(self.width,self.height)
+
+
     def on_press(self, key):
         try:
             # alphanumeric key
@@ -95,6 +99,7 @@ class Control:
                 if self.key_pressed == 'c':
                     print('coin game has started')
                     self.key_pressed = ''
+                    self.coin_game.start()
 
                 # detect face position
                 if frame_count % 3:
@@ -165,7 +170,7 @@ class Control:
                 out_frame_rgba[:, :, :3] = color_frame
                 out_frame_rgba[:, :, 3] = 255
 
-                if self.coin_game.running:
+                if self.coin_game.state == 'running':
                     self.coin_game.update((self.face_position[0]+self.face_width//2,
                                            self.face_position[1]+self.face_height//2))
                     self.coin_game.draw(out_frame_rgba)
