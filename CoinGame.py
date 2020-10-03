@@ -9,7 +9,6 @@ import random
 
 class CoinGame:
     
-
     def __init__(self, width, height):
         # load in and reverse images
         self.coin_img = cv2.imread('assets/coin.png', cv2.IMREAD_UNCHANGED)
