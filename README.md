@@ -13,6 +13,24 @@ Inspiration:
 - [avatarify](https://github.com/alievk/avatarify)
   - make a virtual camera to interface with Zoom
 
+## Product Description
+ - Marketing:
+   - marketed as retro-zoom
+   - marketed as an extension to zoom, but really its 3rd party application
+   - 
+ - features
+   - popups
+      - prompted by long periods of high sad, low joy emotions. 
+      - 
+   - games
+      - coin collect
+        - move your head around to collect bags of coins. 
+        - coins explode in cool gravity fashion when collected
+      - object find
+        - prompt you to find an object, must present it to the camera
+        - apple, banana, tv remote, phone, can, etc. 
+        - coin animation for getting an item correct
+      - 
 
 ## Getting Started:
 
