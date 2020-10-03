@@ -1,0 +1,36 @@
+Plan for VandyHacks!
+
+Project breakdown:
+    1. Capture webcam in python 
+    2. Modify video stream
+        a. Google cloud API (getting data from frame)
+        b. Overlaying images on the frame
+            i. Time based pop-ups (factory pattern)
+                1) Too much time
+                2) You look sad
+                3) Pay attention!
+            ii. AR environment
+                1) Super mario styled - grab gold coins
+                2) Image editing in GIM (Jack)
+                3) Overlay pixelated filter
+    3. Game logic
+        a. Integrated with video
+        b. Controlled with emotions or head movement
+        c. Mask RCNN
+        d. Box to track head like snap cam git
+        e. Retro style
+    4. Stream to virtual camera
+
+Class based structure: (Everything runs in infinite loop)
+    - Get frame from webcam
+    - Send to process frame fn
+        - Makes decision on what to do with state
+        - Updates state
+        - Return new frame with overlay
+    - Get frame frome fn and send to virtual camera
+** State diagram **
+    - Control object that maintains state
+    - Start method begins infinite loop
+
+Roles:
+
