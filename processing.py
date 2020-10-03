@@ -63,6 +63,9 @@ def face_detection(frame):
     :param frame:
     :return: (x,y), w, h: face position x,y coordinates, face width, face height
     """
+    if frame is None :
+        return 0,0,0,0
+    
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     faces = faceCascade.detectMultiScale(

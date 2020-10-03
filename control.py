@@ -92,8 +92,11 @@ class Control:
 
                 # STEP 1: capture video from webcam
                 ret, raw_frame = self.cam.read()
+                raw_frame = cv2.flip(raw_frame, 1)
 
                 # STEP 2: process frames
+                if raw_frame is None :
+                    continue
 
                 # check key presses
                 if self.key_pressed == 'c':
