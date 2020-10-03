@@ -38,6 +38,6 @@
 
 ## Roles:
 
-- Nilai: basic framework, webcam capture
-- Carly and Jack: Google Cloud
-- Shiv: Angular
+- Jack:     debugging for (1)
+- Nilai:    face detection (2)
+- Carly:    Google cloud API research (2) 
