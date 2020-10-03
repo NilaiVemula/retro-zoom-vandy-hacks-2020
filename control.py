@@ -39,6 +39,12 @@ class Control:
         # print out status
         print('webcam capture started ({}x{} @ {}fps)'.format(self.width, self.height, self.fps))
 
+        # initialize class attributes
+        self.face_position = (0,0)
+        self.face_width = 0
+        self.face_height = 0
+        self.face_sentiment = ''
+
     def run(self):
         """ contains main while loop to constantly capture webcam, process, and output
 
@@ -59,12 +65,17 @@ class Control:
 
                 # detect faces and draw rectangles
                 if frame_count == 60:
-                    raw_frame, face_position = processing.face_detection(raw_frame)
-
-                    if 200< face_position[0] < 400 and 100< face_position[1] < 300:
-                        print('Yay')
+                    self.face_sentiment = processing.face_sentiment(raw_frame)
 
                     frame_count = 0
+
+                # write sentiment
+                cv2.putText(raw_frame, self.face_sentiment, (50,50), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=2,
+                            color=(0,0,255))
+
+                # flip image so that it shows up properly in Zoom
+
+                raw_frame = cv2.flip(raw_frame, 1)
 
                 # convert frame to RGB
                 color_frame = cv2.cvtColor(raw_frame, cv2.COLOR_BGR2RGB)

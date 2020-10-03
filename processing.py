@@ -1,5 +1,3 @@
-import cv2
-
 from google.cloud import vision
 import io
 from PIL import Image
@@ -7,9 +5,9 @@ import numpy as np
 
 client = vision.ImageAnnotatorClient()
 
-def face_detection(frame):
 
-    """Detects faces in an image."""
+def face_sentiment(frame):
+    """Detects sentiment from face in an image. reterns string with sentiment"""
 
     ## Convert to an image, then write to a buffer.
     image_from_frame = Image.fromarray(np.uint8(frame))
@@ -20,29 +18,26 @@ def face_detection(frame):
     ## Use the buffer like a file.
     content = buffer.read()
 
-
     image = vision.Image(content=content)
 
     response = client.face_detection(image=image)
     faces = response.face_annotations
 
-    # Names of likelihood from google.cloud.vision.enums
-    likelihood_name = ('UNKNOWN', 'VERY_UNLIKELY', 'UNLIKELY', 'POSSIBLE',
-                       'LIKELY', 'VERY_LIKELY')
-    #print('Faces:')
-    face_position = (0,0)
-    for face in faces:
-        #print('anger: {}'.format(likelihood_name[face.anger_likelihood]))
-        #print('joy: {}'.format(likelihood_name[face.joy_likelihood]))
-        #print('surprise: {}'.format(likelihood_name[face.surprise_likelihood]))
+    if faces:
 
-        vertices = (['({},{})'.format(vertex.x, vertex.y)
-                     for vertex in face.bounding_poly.vertices])
+        # get first face
+        face = faces[0]
 
-        vertex = face.bounding_poly.vertices[0]
-        face_position = vertex.x, vertex.y
+        # score emotions of the face
+        emotions = {'anger': int(face.anger_likelihood),
+                    'joy': int(face.joy_likelihood),
+                    'surprise': int(face.surprise_likelihood),
+                    'sorrow': int(face.sorrow_likelihood)}
 
-        #print('face bounds: {}'.format(','.join(vertices)))
+        # select most prominent emotion
+        most_expressed_emotion = max(emotions, key=emotions.get)
+    else:
+        most_expressed_emotion = ''
 
     if response.error.message:
         raise Exception(
@@ -50,4 +45,4 @@ def face_detection(frame):
             'https://cloud.google.com/apis/design/errors'.format(
                 response.error.message))
 
-    return frame, face_position
+    return most_expressed_emotion
