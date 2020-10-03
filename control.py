@@ -1,7 +1,7 @@
 import cv2
 import pyvirtualcam
 import numpy as np
-
+import processing
 
 class Control:
     """ main class for this project. Starts webcam capture and sends output to virtual camera"""
@@ -51,6 +51,9 @@ class Control:
                 ret, raw_frame = self.cam.read()
 
                 # STEP 2: process frames
+
+                # detect faces and draw rectangles
+                raw_frame = processing.face_detection(raw_frame)
 
                 # convert frame to RGB
                 color_frame = cv2.cvtColor(raw_frame, cv2.COLOR_BGR2RGB)
