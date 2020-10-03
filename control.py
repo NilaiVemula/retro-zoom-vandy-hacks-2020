@@ -80,7 +80,6 @@ class Control:
 
                     self.face_sentiment = self.future_call.result()
                     self.future_call = self.executor.submit(processing.face_sentiment,raw_frame)
-                    print("completed")
                 
                 # detect face sentiment
                 #if frame_count == 60:

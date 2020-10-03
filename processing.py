@@ -14,13 +14,17 @@ faceCascade = cv2.CascadeClassifier('face_detection.xml')
 def face_sentiment(frame):
     """Detects sentiment from face in an image. returns string with sentiment"""
 
-    ## Convert to an image, then write to a buffer.
+    # initial function call with multithreading won't have a frame
+    if frame is None:
+        return ''
+
+    # Convert to an image, then write to a buffer.
     image_from_frame = Image.fromarray(np.uint8(frame))
     buffer = io.BytesIO()
     image_from_frame.save(buffer, format='PNG')
     buffer.seek(0)
 
-    ## Use the buffer like a file.
+    # Use the buffer like a file.
     content = buffer.read()
 
     image = vision.Image(content=content)
