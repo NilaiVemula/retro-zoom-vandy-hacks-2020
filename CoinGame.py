@@ -29,7 +29,7 @@ class CoinGame:
 
     def draw(self, frame):
         if self.bag.active:
-            self.overlay_image(self.bag.image, frame, self.bag.pos)
+            self.overlay_image(self.bag.image, frame, (self.bag.pos[1],self.bag.pos[0]))
             #print(self.bag.pos)
 
     def overlay_image(self, image, frame, offset):
