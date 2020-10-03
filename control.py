@@ -52,6 +52,10 @@ class Control:
 
         self.key_pressed = ''
 
+        # coinGame object
+        self.coin_game = CoinGame(self.width,self.height)
+
+
     def on_press(self, key):
         try:
             # alphanumeric key
@@ -61,9 +65,7 @@ class Control:
             # special key
             pass
 
-        # coinGame object
-        self.coin_game = CoinGame(self.width,self.height)
-
+        
     def run(self):
         """ contains main while loop to constantly capture webcam, process, and output
 
@@ -91,6 +93,7 @@ class Control:
                 if self.key_pressed == 'c':
                     print('coin game has started')
                     self.key_pressed = ''
+                    self.coin_game.start()
 
                 # detect face position
                 if frame_count % 3:
