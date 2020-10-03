@@ -11,3 +11,4 @@ Brainstorming:
 
 Inspiration:
 - [avatarify](https://github.com/alievk/avatarify)
+  - make a virtual camera to interface with Zoom
