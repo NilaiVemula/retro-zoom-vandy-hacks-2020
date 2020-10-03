@@ -4,11 +4,13 @@ import numpy as np
 import processing
 from concurrent.futures import ThreadPoolExecutor
 
+from coingame import CoinGame
+
 
 class Control:
     """ main class for this project. Starts webcam capture and sends output to virtual camera"""
 
-    def __init__(self, webcam_source=1, width=640, height=480, fps=30):
+    def __init__(self, webcam_source=0, width=640, height=480, fps=30):
         """ sets user preferences for resolution and fps, starts webcam capture
 
         :param webcam_source: webcam source 0 is the laptop webcam and 1 is the usb webcam
@@ -86,6 +88,9 @@ class Control:
                 #    self.face_sentiment = processing.face_sentiment(raw_frame)
                 #    frame_count = 0
 
+                
+                
+
                 # write sentiment
                 cv2.putText(raw_frame, self.face_sentiment, (50, 50), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=2,
                             color=(0, 0, 255))
@@ -100,6 +105,9 @@ class Control:
                 out_frame_rgba = np.zeros((self.height, self.width, 4), np.uint8)
                 out_frame_rgba[:, :, :3] = color_frame
                 out_frame_rgba[:, :, 3] = 255
+
+                c = CoinGame()
+                c.draw(out_frame_rgba)
 
                 # STEP 3: send to virtual camera
                 virtual_cam.send(out_frame_rgba)
