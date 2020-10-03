@@ -5,11 +5,13 @@ import processing
 from concurrent.futures import ThreadPoolExecutor
 from pynput import keyboard
 
+from coingame import CoinGame
+
 
 class Control:
     """ main class for this project. Starts webcam capture and sends output to virtual camera"""
 
-    def __init__(self, webcam_source=1, width=640, height=480, fps=30):
+    def __init__(self, webcam_source=0, width=640, height=480, fps=30):
         """ sets user preferences for resolution and fps, starts webcam capture
 
         :param webcam_source: webcam source 0 is the laptop webcam and 1 is the usb webcam
@@ -59,6 +61,9 @@ class Control:
             # special key
             pass
 
+        # coinGame object
+        self.coin_game = CoinGame(self.width,self.height)
+
     def run(self):
         """ contains main while loop to constantly capture webcam, process, and output
 
@@ -102,12 +107,15 @@ class Control:
                     self.face_sentiment = self.future_call.result()
                     self.future_call = self.executor.submit(processing.face_sentiment,raw_frame)
 
+                
+                
+
                 # write sentiment
-                cv2.putText(raw_frame, self.face_sentiment, (50, 50), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=2,
+                cv2.putText(raw_frame, self.face_sentiment, (50,150), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=2,
                             color=(0, 0, 255))
 
                 # flip image so that it shows up properly in Zoom
-                raw_frame = cv2.flip(raw_frame, 1)
+                # raw_frame = cv2.flip(raw_frame, 1)
 
                 # convert frame to RGB
                 color_frame = cv2.cvtColor(raw_frame, cv2.COLOR_BGR2RGB)
@@ -116,6 +124,11 @@ class Control:
                 out_frame_rgba = np.zeros((self.height, self.width, 4), np.uint8)
                 out_frame_rgba[:, :, :3] = color_frame
                 out_frame_rgba[:, :, 3] = 255
+
+                if self.coin_game.running:
+                    self.coin_game.update((self.face_position[0]+self.face_width//2,
+                                           self.face_position[1]+self.face_height//2))
+                    self.coin_game.draw(out_frame_rgba)
 
                 # STEP 3: send to virtual camera
                 virtual_cam.send(out_frame_rgba)
