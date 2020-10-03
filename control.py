@@ -49,6 +49,9 @@ class Control:
         self.executor = ThreadPoolExecutor(max_workers=1)
         self.future_call = self.executor.submit(processing.face_sentiment,None)
 
+        # coinGame object
+        self.coin_game = CoinGame(self.width,self.height)
+
     def run(self):
         """ contains main while loop to constantly capture webcam, process, and output
 
@@ -96,7 +99,7 @@ class Control:
                             color=(0, 0, 255))
 
                 # flip image so that it shows up properly in Zoom
-                raw_frame = cv2.flip(raw_frame, 1)
+                # raw_frame = cv2.flip(raw_frame, 1)
 
                 # convert frame to RGB
                 color_frame = cv2.cvtColor(raw_frame, cv2.COLOR_BGR2RGB)
@@ -106,9 +109,10 @@ class Control:
                 out_frame_rgba[:, :, :3] = color_frame
                 out_frame_rgba[:, :, 3] = 255
 
-                c = CoinGame(self.width, self.height)
-                c.bag.goto_random()
-                c.draw(out_frame_rgba)
+                if self.coin_game.running:
+                    self.coin_game.update((self.face_position[0]+self.face_width//2,
+                                           self.face_position[1]+self.face_height//2))
+                    self.coin_game.draw(out_frame_rgba)
 
                 # STEP 3: send to virtual camera
                 virtual_cam.send(out_frame_rgba)

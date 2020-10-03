@@ -20,12 +20,19 @@ class CoinGame:
 
         # create a bag object
         self.bag = Actor(width, height,self.coinbag_img)
+        self.bag.goto_random()
 
         # create a list for the coins
 
+        self.running = True
 
-    def update(self, face_frame):
-        self.bag.goto_random()
+
+    def update(self, center):
+        print('center', center)
+        print('bag', self.bag.pos)
+        if self.bag.contains(center):
+            print('yee')
+            self.bag.goto_random()
 
     def draw(self, frame):
         if self.bag.active:
@@ -55,8 +62,8 @@ class Actor:
         self.height, self.width = self.image.shape[:2]
     
     def goto_random(self):
-        self.pos = random.randint(self.width, self.screen_width-self.width), \
-                   random.randint(self.height,self.screen_height-self.height)
+        self.pos = random.randint(self.width*2, self.screen_width-self.width*2), \
+                   random.randint(self.height*2,self.screen_height-self.height*2)
 
     def contains(self, point):
         return self.pos[0] < point[0] < self.pos[0] + self.width and \
