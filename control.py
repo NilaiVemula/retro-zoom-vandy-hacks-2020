@@ -10,17 +10,15 @@ class Control:
     def __init__(self, webcam_source=1, width=640, height=480, fps=30):
         """ sets user preferences for resolution and fps, starts webcam capture
 
-        :param webcam_source:
+        :param webcam_source: webcam source 0 is the laptop webcam and 1 is the usb webcam
         :type webcam_source: int
-        :param width:
+        :param width: width of webcam stream
         :type width: int
-        :param height:
+        :param height: height of webcam stream
         :type height: int
-        :param fps:
+        :param fps: fps of videocam stream
         :type fps: int
         """
-        # constructor for the control class
-        # on my computer, webcam source 0 is the laptop webcam and 1 is the usb webcam
         self.webcam_source = webcam_source
 
         # initialize webcam capture
@@ -38,7 +36,7 @@ class Control:
         # print out status
         print('webcam capture started ({}x{} @ {}fps)'.format(self.width, self.height, self.fps))
 
-        # initialize class attributes
+        # initialize face attributes
         self.face_position = (0, 0)
         self.face_width = 0
         self.face_height = 0
@@ -63,10 +61,11 @@ class Control:
 
                 # STEP 2: process frames
 
-                # detect face
+                # detect face position
                 if frame_count % 3:
                     x,y, self.face_width, self.face_height = processing.face_detection(raw_frame)
                     self.face_position = x,y
+
                 # draw rectangle around face
                 cv2.rectangle(raw_frame, self.face_position, (self.face_position[0] + self.face_width,
                                                               self.face_position[1] + self.face_height), (0, 255, 0), 2)
@@ -74,7 +73,6 @@ class Control:
                 # detect face sentiment
                 if frame_count == 60:
                     self.face_sentiment = processing.face_sentiment(raw_frame)
-
                     frame_count = 0
 
                 # write sentiment
@@ -82,7 +80,6 @@ class Control:
                             color=(0, 0, 255))
 
                 # flip image so that it shows up properly in Zoom
-
                 raw_frame = cv2.flip(raw_frame, 1)
 
                 # convert frame to RGB
