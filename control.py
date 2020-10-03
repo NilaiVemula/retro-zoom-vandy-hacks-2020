@@ -3,7 +3,7 @@ import pyvirtualcam
 import numpy as np
 import processing
 from concurrent.futures import ThreadPoolExecutor
-
+import logger
 
 class Control:
     """ main class for this project. Starts webcam capture and sends output to virtual camera"""
@@ -47,6 +47,7 @@ class Control:
         self.executor = ThreadPoolExecutor(max_workers=1)
         self.future_call = self.executor.submit(processing.face_sentiment,None)
 
+        self.logger = logger.Logger()
     def run(self):
         """ contains main while loop to constantly capture webcam, process, and output
 
@@ -58,6 +59,7 @@ class Control:
                 'virtual camera started ({}x{} @ {}fps)'.format(virtual_cam.width, virtual_cam.height, virtual_cam.fps))
             virtual_cam.delay = 0
             frame_count = 0
+            self.logger.startTimer()
             while True:
                 frame_count += 1
 
@@ -90,6 +92,8 @@ class Control:
                 cv2.putText(raw_frame, self.face_sentiment, (50, 50), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=2,
                             color=(0, 0, 255))
 
+                self.logger.log_emotion(self.face_sentiment)
+
                 # flip image so that it shows up properly in Zoom
                 raw_frame = cv2.flip(raw_frame, 1)
 
@@ -104,6 +108,7 @@ class Control:
                 # STEP 3: send to virtual camera
                 virtual_cam.send(out_frame_rgba)
                 virtual_cam.sleep_until_next_frame()
+        self.logger.endTimer()
 
 
 # run program
