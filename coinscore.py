@@ -14,7 +14,7 @@ class CoinScore:
         self.overlay_image(self.coin_img, frame, (500,100))
     
     def increment(self):
-        self.coun_count += 1
+        self.coin_count += 1
 
     def overlay_image(self, image, frame, offset):
         r,c,b = image.shape
