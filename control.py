@@ -124,8 +124,10 @@ class Control:
                             color=(0, 0, 255))
                 
                 if self.face_sentiment == 'joy':
-                    self.progress_count = self.progress_count+1
-                if self.progress_count == 250 :
+                    self.progress_count +=1
+                elif self.face_sentiment == 'angry' and self.progress_count > 1:
+                    self.progress_count -= 1
+                if self.progress_count >= 250:
                     self.progress_count = 1
                     self.coin_count = self.coin_count+1
 
