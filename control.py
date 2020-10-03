@@ -45,7 +45,7 @@ class Control:
         with pyvirtualcam.Camera(width=self.width, height=self.height, fps=self.fps) as cam:
             # print status
             print('virtual camera started ({}x{} @ {}fps)'.format(cam.width, cam.height, cam.fps))
-
+            cam.delay = -0
             while True:
                 # STEP 1: capture video from webcam
                 ret, raw_frame = self.cam.read()
