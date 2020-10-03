@@ -1,6 +1,8 @@
 import cv2
 import pyvirtualcam
 import numpy as np
+import os
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'vandy-hacks-2020-a026305d4125.json'
 import processing
 
 class Control:
@@ -46,17 +48,23 @@ class Control:
             # print status
             print('virtual camera started ({}x{} @ {}fps)'.format(virtual_cam.width, virtual_cam.height, virtual_cam.fps))
             virtual_cam.delay = 0
+            frame_count = 0
             while True:
+                frame_count += 1
+
                 # STEP 1: capture video from webcam
                 ret, raw_frame = self.cam.read()
 
                 # STEP 2: process frames
 
                 # detect faces and draw rectangles
-                raw_frame, face_position = processing.face_detection(raw_frame)
+                if frame_count == 60:
+                    raw_frame, face_position = processing.face_detection(raw_frame)
 
-                if 200< face_position[0] < 400 and 100< face_position[1] < 300:
-                    pass
+                    if 200< face_position[0] < 400 and 100< face_position[1] < 300:
+                        print('Yay')
+
+                    frame_count = 0
 
                 # convert frame to RGB
                 color_frame = cv2.cvtColor(raw_frame, cv2.COLOR_BGR2RGB)
