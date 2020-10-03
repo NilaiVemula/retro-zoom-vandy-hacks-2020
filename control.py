@@ -1,27 +1,24 @@
 import cv2
 import pyvirtualcam
 import numpy as np
-import os
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'vandy-hacks-2020-a026305d4125.json'
 import processing
+
 
 class Control:
     """ main class for this project. Starts webcam capture and sends output to virtual camera"""
 
-    def __init__(self,  webcam_source=1, width=640, height=480, fps=30):
+    def __init__(self, webcam_source=1, width=640, height=480, fps=30):
         """ sets user preferences for resolution and fps, starts webcam capture
 
-        :param webcam_source:
+        :param webcam_source: webcam source 0 is the laptop webcam and 1 is the usb webcam
         :type webcam_source: int
-        :param width:
+        :param width: width of webcam stream
         :type width: int
-        :param height:
+        :param height: height of webcam stream
         :type height: int
-        :param fps:
+        :param fps: fps of videocam stream
         :type fps: int
         """
-        # constructor for the control class
-        # on my computer, webcam source 0 is the laptop webcam and 1 is the usb webcam
         self.webcam_source = webcam_source
 
         # initialize webcam capture
@@ -39,8 +36,8 @@ class Control:
         # print out status
         print('webcam capture started ({}x{} @ {}fps)'.format(self.width, self.height, self.fps))
 
-        # initialize class attributes
-        self.face_position = (0,0)
+        # initialize face attributes
+        self.face_position = (0, 0)
         self.face_width = 0
         self.face_height = 0
         self.face_sentiment = ''
@@ -52,7 +49,8 @@ class Control:
         """
         with pyvirtualcam.Camera(width=self.width, height=self.height, fps=self.fps) as virtual_cam:
             # print status
-            print('virtual camera started ({}x{} @ {}fps)'.format(virtual_cam.width, virtual_cam.height, virtual_cam.fps))
+            print(
+                'virtual camera started ({}x{} @ {}fps)'.format(virtual_cam.width, virtual_cam.height, virtual_cam.fps))
             virtual_cam.delay = 0
             frame_count = 0
             while True:
@@ -63,18 +61,25 @@ class Control:
 
                 # STEP 2: process frames
 
-                # detect faces and draw rectangles
+                # detect face position
+                if frame_count % 3:
+                    x,y, self.face_width, self.face_height = processing.face_detection(raw_frame)
+                    self.face_position = x,y
+
+                # draw rectangle around face
+                cv2.rectangle(raw_frame, self.face_position, (self.face_position[0] + self.face_width,
+                                                              self.face_position[1] + self.face_height), (0, 255, 0), 2)
+
+                # detect face sentiment
                 if frame_count == 60:
                     self.face_sentiment = processing.face_sentiment(raw_frame)
-
                     frame_count = 0
 
                 # write sentiment
-                cv2.putText(raw_frame, self.face_sentiment, (50,50), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=2,
-                            color=(0,0,255))
+                cv2.putText(raw_frame, self.face_sentiment, (50, 50), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=2,
+                            color=(0, 0, 255))
 
                 # flip image so that it shows up properly in Zoom
-
                 raw_frame = cv2.flip(raw_frame, 1)
 
                 # convert frame to RGB

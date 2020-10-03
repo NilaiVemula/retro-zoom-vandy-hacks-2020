@@ -1,13 +1,19 @@
-from google.cloud import vision
 import io
-from PIL import Image
+import os
+
+import cv2
 import numpy as np
+from PIL import Image
+
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'vandy-hacks-2020-a026305d4125.json'
+from google.cloud import vision
 
 client = vision.ImageAnnotatorClient()
+faceCascade = cv2.CascadeClassifier('face_detection.xml')
 
 
 def face_sentiment(frame):
-    """Detects sentiment from face in an image. reterns string with sentiment"""
+    """Detects sentiment from face in an image. returns string with sentiment"""
 
     ## Convert to an image, then write to a buffer.
     image_from_frame = Image.fromarray(np.uint8(frame))
@@ -46,3 +52,27 @@ def face_sentiment(frame):
                 response.error.message))
 
     return most_expressed_emotion
+
+
+def face_detection(frame):
+    """ detect face using cv2
+
+    :param frame:
+    :return: (x,y), w, h: face position x,y coordinates, face width, face height
+    """
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+    faces = faceCascade.detectMultiScale(
+        gray,
+        scaleFactor=1.1,
+        minNeighbors=5,
+        minSize=(30, 30),
+        flags=cv2.CASCADE_SCALE_IMAGE
+    )
+
+    # Draw a rectangle around the faces
+    position_x, position_y ,width,height = 0, 0, 0, 0
+    for x, y, w, h in faces:
+        position_x, position_y ,width,height = x, y, w, h
+
+    return position_x, position_y,width,height
