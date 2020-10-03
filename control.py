@@ -5,13 +5,13 @@ import processing
 from concurrent.futures import ThreadPoolExecutor
 from pynput import keyboard
 
-from coingame import CoinGame
+from CoinGame import CoinGame
 
 
 class Control:
     """ main class for this project. Starts webcam capture and sends output to virtual camera"""
 
-    def __init__(self, webcam_source=0, width=640, height=480, fps=30):
+    def __init__(self, webcam_source=1, width=640, height=480, fps=30):
         """ sets user preferences for resolution and fps, starts webcam capture
 
         :param webcam_source: webcam source 0 is the laptop webcam and 1 is the usb webcam
@@ -51,6 +51,13 @@ class Control:
         self.future_call = self.executor.submit(processing.face_sentiment, None)
 
         self.key_pressed = ''
+        
+        # coinGame object
+        self.coin_game = CoinGame(self.width,self.height)
+        
+        self.coin_count = 0
+        self.progress_count = 1
+
 
     def on_press(self, key):
         try:
@@ -60,12 +67,6 @@ class Control:
         except AttributeError:
             # special key
             pass
-
-        # coinGame object
-        self.coin_game = CoinGame(self.width,self.height)
-        
-        self.coin_count = 0
-        self.progress_count = 1
 
     def run(self):
         """ contains main while loop to constantly capture webcam, process, and output
