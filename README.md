@@ -17,11 +17,12 @@ Inspiration:
  - Marketing:
    - marketed as retro-zoom
    - marketed as an extension to zoom, but really its 3rd party application
-   - 
- - features
+   - "An interactive Zoom tool that promotes engagement and prevents Zoom fatigue"
+ - Features:
    - popups
       - prompted by long periods of high sad, low joy emotions. 
-      - 
+      - prompted by eye tracker sensing long periods of wandering
+      - prompted by time limit set to daily value
    - games
       - coin collect
         - move your head around to collect bags of coins. 
@@ -30,7 +31,11 @@ Inspiration:
         - prompt you to find an object, must present it to the camera
         - apple, banana, tv remote, phone, can, etc. 
         - coin animation for getting an item correct
-      - 
+      - flappy bird
+        - flappy bird but your head/nose is the bird and you have to move your head to direct it
+        - count obstacles gone through
+      - astroid dodge
+        - dodge the astroids coming from offscreen with head
 
 ## Getting Started:
 
