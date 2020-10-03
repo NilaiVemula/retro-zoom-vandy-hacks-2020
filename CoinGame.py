@@ -23,13 +23,15 @@ class CoinGame:
         self.bag.goto_random()
 
         # create a list for the coins
+        self.coins = []
 
-        self.running = True
+        # create a game state attribute
+        self.state = "running"
 
 
     def update(self, center):
-        print('center', center)
-        print('bag', self.bag.pos)
+        if self.state = "running":
+            pass
         if self.bag.contains(center):
             print('yee')
             self.bag.goto_random()
