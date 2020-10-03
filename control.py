@@ -48,7 +48,7 @@ class Control:
             virtual_cam.delay = 0
             while True:
                 # STEP 1: capture video from webcam
-                ret, raw_frame = self.cam.read()
+                ret, raw_frame = self.cam.retrieve()
 
                 # STEP 2: process frames
 
