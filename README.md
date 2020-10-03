@@ -20,7 +20,10 @@ First, install the following dependencies (you will need Python 3.8):
 
 - [OBS Studio](https://obsproject.com/download)
 - [OBS Studio Virtual Camera Plug-in](https://obsproject.com/forum/resources/obs-virtualcam.949/)
-- [`pyvirtualcam` python library](https://github.com/letmaik/pyvirtualcam) + numpy (`pip install -r requirement.txt`)
+- [Python Libraries](requirements.txt)
+    - [`pyvirtualcam` python library](https://github.com/letmaik/pyvirtualcam)
+    - numpy
+    - open cv 
 
 Instructions:
 1. Set up a virtual camera in OBS Studio
