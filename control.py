@@ -3,11 +3,11 @@ import pyvirtualcam
 import numpy as np
 import time
 from videocaptureasync import VideoCaptureAsync
-
+from processing import face_detection
 class Control:
     """ main class for this project. Starts webcam capture and sends output to virtual camera"""
 
-    def __init__(self,  webcam_source=1, width=640//64, height=480//48, fps=24):
+    def __init__(self,  webcam_source=0, width=640//64, height=480//48, fps=24):
         """ sets user preferences for resolution and fps, starts webcam capture
 
         :param webcam_source:
@@ -73,7 +73,7 @@ class Control:
 
                 # convert frame to RGB
                 color_frame = cv2.cvtColor(raw_frame, cv2.COLOR_BGR2RGB)
-
+                color_frame = face_detection(color_frame)
                 test2 = time.time() - start 
 
                 # add alpha channel
@@ -85,6 +85,7 @@ class Control:
 
 
                 # STEP 3: send to virtual camera
+
                 virtual_cam.send(out_frame_rgba)
                 virtual_cam.sleep_until_next_frame()
 
