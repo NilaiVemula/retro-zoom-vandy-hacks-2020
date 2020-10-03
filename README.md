@@ -19,11 +19,16 @@ Inspiration:
    - marketed as an extension to zoom, but really its 3rd party application
    - "An interactive Zoom tool that promotes engagement and prevents Zoom fatigue"
  - Features:
-   - popups
-      - prompted by long periods of high sad, low joy emotions. 
-      - prompted by eye tracker sensing long periods of wandering
-      - prompted by time limit set to daily value
-   - games
+   - self monitor for productiveness (Carly - pipeline and coins)
+      - mario pipeline fills when you pay attention and are happy
+      - get coins each time pipeline is complete
+      - displayed through zoom camera
+      - reports send to db and displayed in ui
+   - popups (Shiv - daily limit and emotion summary)
+      - prompted by long periods of high sad, low joy emotions (tracked in bg, not notified, presented in summary)
+      - prompted by eye tracker sensing long periods of wandering (difficult to implement, perhaps not accurate indicator of productivity)
+      - prompted by time limit set to daily value (store value in file to track time during day, sound or popup)
+   - games (Nilai - key presses) (Jack - game logic)
       - coin collect
         - move your head around to collect bags of coins. 
         - coins explode in cool gravity fashion when collected
