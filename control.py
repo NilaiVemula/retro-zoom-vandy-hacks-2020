@@ -53,7 +53,10 @@ class Control:
                 # STEP 2: process frames
 
                 # detect faces and draw rectangles
-                raw_frame = processing.face_detection(raw_frame)
+                raw_frame, face_position = processing.face_detection(raw_frame)
+
+                if 200< face_position[0] < 400 and 100< face_position[1] < 300:
+                    pass
 
                 # convert frame to RGB
                 color_frame = cv2.cvtColor(raw_frame, cv2.COLOR_BGR2RGB)

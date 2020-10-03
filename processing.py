@@ -15,7 +15,9 @@ def face_detection(frame):
     )
 
     # Draw a rectangle around the faces
+    face_position = (0,0)
     for (x, y, w, h) in faces:
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        face_position = (x,y)
 
-    return frame
+    return frame, face_position
