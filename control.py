@@ -2,6 +2,7 @@ import cv2
 import pyvirtualcam
 import numpy as np
 import processing
+from concurrent.futures import ThreadPoolExecutor
 
 
 class Control:
@@ -41,6 +42,10 @@ class Control:
         self.face_width = 0
         self.face_height = 0
         self.face_sentiment = ''
+        
+        # start a thread to call the google cloud api and get the sentiment from the frames
+        self.executor = ThreadPoolExecutor(max_workers=1)
+        self.future_call = self.executor.submit(processing.face_sentiment,None)
 
     def run(self):
         """ contains main while loop to constantly capture webcam, process, and output
@@ -70,10 +75,17 @@ class Control:
                 cv2.rectangle(raw_frame, self.face_position, (self.face_position[0] + self.face_width,
                                                               self.face_position[1] + self.face_height), (0, 255, 0), 2)
 
+                # check if the api call thread is already running. If not, start it up
+                if self.future_call and self.future_call.done():
+
+                    self.face_sentiment = self.future_call.result()
+                    self.future_call = self.executor.submit(processing.face_sentiment,raw_frame)
+                    print("completed")
+                
                 # detect face sentiment
-                if frame_count == 60:
-                    self.face_sentiment = processing.face_sentiment(raw_frame)
-                    frame_count = 0
+                #if frame_count == 60:
+                #    self.face_sentiment = processing.face_sentiment(raw_frame)
+                #    frame_count = 0
 
                 # write sentiment
                 cv2.putText(raw_frame, self.face_sentiment, (50, 50), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=2,

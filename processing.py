@@ -11,7 +11,6 @@ from google.cloud import vision
 client = vision.ImageAnnotatorClient()
 faceCascade = cv2.CascadeClassifier('face_detection.xml')
 
-
 def face_sentiment(frame):
     """Detects sentiment from face in an image. returns string with sentiment"""
 
