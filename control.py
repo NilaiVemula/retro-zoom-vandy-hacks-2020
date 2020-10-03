@@ -1,6 +1,8 @@
 import cv2
 import pyvirtualcam
 import numpy as np
+import os
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'vandy-hacks-2020-a026305d4125.json'
 import processing
 
 class Control:
@@ -37,6 +39,12 @@ class Control:
         # print out status
         print('webcam capture started ({}x{} @ {}fps)'.format(self.width, self.height, self.fps))
 
+        # initialize class attributes
+        self.face_position = (0,0)
+        self.face_width = 0
+        self.face_height = 0
+        self.face_sentiment = ''
+
     def run(self):
         """ contains main while loop to constantly capture webcam, process, and output
 
@@ -46,17 +54,28 @@ class Control:
             # print status
             print('virtual camera started ({}x{} @ {}fps)'.format(virtual_cam.width, virtual_cam.height, virtual_cam.fps))
             virtual_cam.delay = 0
+            frame_count = 0
             while True:
+                frame_count += 1
+
                 # STEP 1: capture video from webcam
                 ret, raw_frame = self.cam.read()
 
                 # STEP 2: process frames
 
                 # detect faces and draw rectangles
-                raw_frame, face_position = processing.face_detection(raw_frame)
+                if frame_count == 60:
+                    self.face_sentiment = processing.face_sentiment(raw_frame)
 
-                if 200< face_position[0] < 400 and 100< face_position[1] < 300:
-                    pass
+                    frame_count = 0
+
+                # write sentiment
+                cv2.putText(raw_frame, self.face_sentiment, (50,50), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=2,
+                            color=(0,0,255))
+
+                # flip image so that it shows up properly in Zoom
+
+                raw_frame = cv2.flip(raw_frame, 1)
 
                 # convert frame to RGB
                 color_frame = cv2.cvtColor(raw_frame, cv2.COLOR_BGR2RGB)

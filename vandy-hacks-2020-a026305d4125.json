@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "vandy-hacks-2020",
+  "private_key_id": "a026305d412577096c4d8a6f11d44134cb0d2674",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCjEw8Vtvo0ycfQ\nSWkWgjKGcBfLPXmek/3ZsEjFQLDlKmd3Jrypz9YgHEnIP2P+5nK6p/Pz5tN7zQNs\nQ1EM4Y7KZXqknGFEbN+mPjssgA0+OVef7CoS23BYwvx/fo2y8uYLh/u02zXXmpFm\nodnxxeW+txbXjfyORrXAmPj7cnbbzNeHPum4TjbE8QcbvHBAA6rfgP/NT8jBVX9L\nC5lf8bBi8qLJnAVn+EzT1XvmdDT/IGCAEKy+HmmoYTt16axL/9IAjbQJPi/KsdWA\nQJt6pktej2RcNgaWLMn81uZs5VjumRJzm0SO66GtINj8lR6p3C3/bFxvX5Qs0YZF\nVsYfIdIfAgMBAAECggEAMQuV4VuHU+IOCOxTQVRGGt3SoisqjVGIKvUUZdLngPzo\nYlMRsebSyRSI8kNycSLhBZdmzQeyuky2B1UVptCdz+yGXsSzkk9GUmrsBB29HeZE\nHtJ58vLxjpiSNUwcFOJt4rDyuHmnb2FK8rmh4U+6IcpSAeFvwGCu4C6Bz6ok6kTt\nwVQA7OqfI8WOmXbNnXIhV4kEVq/137gHOf6yIJLHoU2fZgf9cWcgr1QnMoNFcLCm\nI2etZp2wQXRpZc9hFzy7Xu02xEb+M+0vGU8PBBCvm/jHRhjGMljcNV1EWlmqcOFr\nRnzj/g8IbYiSTC+1WX3ccwpPXao34hfFQ1uUh5AVaQKBgQDYTjNIbjMIZ9dlEdqh\nHat37lFbhGCQnxfgvfDHk/wNekMLpHiaBPgcrfByMbWFBShfCS69osxATBZLn/9q\nNO7Nw48lzc3UmhBDZ5ZqTYIkSH6HbbaugTETyzUneCJwiqOLq4GKmX+2QwEVIidJ\ncQGcogGxys2X1OEw2qmzGlk69wKBgQDBAB9FZoD69w0ETI6nBHm19oNU4U5IvjpV\nhp5Gpxt2FhUJfUu9tmpOLu+6CRU2zi22nSQflk2cZl6GUXW31nq8y7LsiBw1C5WW\nxAAffC1VOwL+wQacPCQufF8grSHdosOu2dBgfdI7lQYBa2UAJr1BMp/T4vapXZl9\nwyOuo5lwGQKBgBzy4lQoQ3Y1h5NEP3Feqisj3wmTfuT8FdMDOK1NNeeL3Fs7iNR8\nI8Sa1tpBotyJoyyM6w+AMTvNsxIt+J37NZaePJM/pvN0JwcOXwgdFXTLqvtvCIr0\nSWAvyw5cOqe7NkYkDvNAteHrt8JfTsi6cg/HctibnsZaPEUwjpOkzBpjAoGAIWg0\nAX9MtCQvTJ8z0hUkPCr/cKHPOygyULuMig5C4p3P5mSZx6zbmczmEf2gfmwR3Zo1\ntoH9zSSrF/Thu4CUnjlkLy0gNM5chkxG+Sw1bJtaWV5wFnsSiDle/fj587NIy+tH\n9mvRCB8zeutsACq0d6SbpcGTkJ1zBCHS+1e2J4ECgYAGDDNkjrpqRMCrpurMrAa/\ng85Zbdp3i2OE7w+H7UzN2khPUrkz3z9DXokzwzR+2UXa0DYVOYqVA8LNND3lTFNY\ndjPuGh0t44pZzonS3C6ZTaKwa+sFGzOH6ypIcKERYBLgQwi09lKZnlI5sFXWiXKk\nnyaXECHO7jmnlQGZQN0PQA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "vandy-hacks-2020@vandy-hacks-2020.iam.gserviceaccount.com",
+  "client_id": "108372640182736471515",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/vandy-hacks-2020%40vandy-hacks-2020.iam.gserviceaccount.com"
+}
