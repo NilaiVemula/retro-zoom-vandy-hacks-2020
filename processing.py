@@ -1,22 +1,18 @@
-import cv2
-
-from google.cloud import vision
 import io
-from PIL import Image
+import os
+
+import cv2
 import numpy as np
+from PIL import Image
+
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'vandy-hacks-2020-a026305d4125.json'
+from google.cloud import vision
 
 client = vision.ImageAnnotatorClient()
+faceCascade = cv2.CascadeClassifier('face_detection.xml')
 
-
-# take in a frame. Call the google bision api and return the emotions of each face
-def get_emotion(frame):
-
-    print('ok')
-
-    if frame is None:
-        return None
-
-    """Detects faces in an image."""
+def face_sentiment(frame):
+    """Detects sentiment from face in an image. returns string with sentiment"""
 
     ## Convert to an image, then write to a buffer.
     image_from_frame = Image.fromarray(np.uint8(frame))
@@ -27,29 +23,26 @@ def get_emotion(frame):
     ## Use the buffer like a file.
     content = buffer.read()
 
-
     image = vision.Image(content=content)
 
     response = client.face_detection(image=image)
     faces = response.face_annotations
 
-    # Names of likelihood from google.cloud.vision.enums
-    likelihood_name = ('UNKNOWN', 'VERY_UNLIKELY', 'UNLIKELY', 'POSSIBLE',
-                       'LIKELY', 'VERY_LIKELY')
-    #print('Faces:')
-    face_position = (0,0)
-    for face in faces:
-        #print('anger: {}'.format(likelihood_name[face.anger_likelihood]))
-        #print('joy: {}'.format(likelihood_name[face.joy_likelihood]))
-        #print('surprise: {}'.format(likelihood_name[face.surprise_likelihood]))
+    if faces:
 
-        vertices = (['({},{})'.format(vertex.x, vertex.y)
-                     for vertex in face.bounding_poly.vertices])
+        # get first face
+        face = faces[0]
 
-        vertex = face.bounding_poly.vertices[0]
-        face_position = vertex.x, vertex.y
+        # score emotions of the face
+        emotions = {'anger': int(face.anger_likelihood),
+                    'joy': int(face.joy_likelihood),
+                    'surprise': int(face.surprise_likelihood),
+                    'sorrow': int(face.sorrow_likelihood)}
 
-        #print('face bounds: {}'.format(','.join(vertices)))
+        # select most prominent emotion
+        most_expressed_emotion = max(emotions, key=emotions.get)
+    else:
+        most_expressed_emotion = ''
 
     if response.error.message:
         raise Exception(
@@ -57,13 +50,15 @@ def get_emotion(frame):
             'https://cloud.google.com/apis/design/errors'.format(
                 response.error.message))
 
-    return faces
-    
-
-faceCascade = cv2.CascadeClassifier('face_detection.xml')
+    return most_expressed_emotion
 
 
 def face_detection(frame):
+    """ detect face using cv2
+
+    :param frame:
+    :return: (x,y), w, h: face position x,y coordinates, face width, face height
+    """
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     faces = faceCascade.detectMultiScale(
@@ -75,7 +70,8 @@ def face_detection(frame):
     )
 
     # Draw a rectangle around the faces
-    # for (x, y, w, h) in faces:
-    #     cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+    position_x, position_y ,width,height = 0, 0, 0, 0
+    for x, y, w, h in faces:
+        position_x, position_y ,width,height = x, y, w, h
 
-    return faces
+    return position_x, position_y,width,height

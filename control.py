@@ -1,30 +1,25 @@
 import cv2
 import pyvirtualcam
 import numpy as np
-import os
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'vandy-hacks-2020-a026305d4125.json'
-
-from processing import face_detection, get_emotion
-
+import processing
 from concurrent.futures import ThreadPoolExecutor
+
 
 class Control:
     """ main class for this project. Starts webcam capture and sends output to virtual camera"""
 
-    def __init__(self,  webcam_source=0, width=640, height=480, fps=30):
+    def __init__(self, webcam_source=1, width=640, height=480, fps=30):
         """ sets user preferences for resolution and fps, starts webcam capture
 
-        :param webcam_source:
+        :param webcam_source: webcam source 0 is the laptop webcam and 1 is the usb webcam
         :type webcam_source: int
-        :param width:
+        :param width: width of webcam stream
         :type width: int
-        :param height:
+        :param height: height of webcam stream
         :type height: int
-        :param fps:
+        :param fps: fps of videocam stream
         :type fps: int
         """
-        # constructor for the control class
-        # on my computer, webcam source 0 is the laptop webcam and 1 is the usb webcam
         self.webcam_source = webcam_source
 
         # initialize webcam capture
@@ -38,19 +33,19 @@ class Control:
         self.width = int(self.cam.get(cv2.CAP_PROP_FRAME_WIDTH))
         self.height = int(self.cam.get(cv2.CAP_PROP_FRAME_HEIGHT))
         self.fps = self.cam.get(cv2.CAP_PROP_FPS)
-        
-        # store the emotions
-        self.emotions = None
-
-        # start a thread to call the google cloud api and get the sentiment from the frames
-        self.executor = ThreadPoolExecutor(max_workers=1)
-        self.future_call = self.executor.submit(get_emotion,None)
-        
-
-        
 
         # print out status
         print('webcam capture started ({}x{} @ {}fps)'.format(self.width, self.height, self.fps))
+
+        # initialize face attributes
+        self.face_position = (0, 0)
+        self.face_width = 0
+        self.face_height = 0
+        self.face_sentiment = ''
+        
+        # start a thread to call the google cloud api and get the sentiment from the frames
+        self.executor = ThreadPoolExecutor(max_workers=1)
+        self.future_call = self.executor.submit(processing.face_sentiment,None)
 
     def run(self):
         """ contains main while loop to constantly capture webcam, process, and output
@@ -59,7 +54,8 @@ class Control:
         """
         with pyvirtualcam.Camera(width=self.width, height=self.height, fps=self.fps) as virtual_cam:
             # print status
-            print('virtual camera started ({}x{} @ {}fps)'.format(virtual_cam.width, virtual_cam.height, virtual_cam.fps))
+            print(
+                'virtual camera started ({}x{} @ {}fps)'.format(virtual_cam.width, virtual_cam.height, virtual_cam.fps))
             virtual_cam.delay = 0
             frame_count = 0
             while True:
@@ -68,36 +64,35 @@ class Control:
                 # STEP 1: capture video from webcam
                 ret, raw_frame = self.cam.read()
 
+                # STEP 2: process frames
+
+                # detect face position
+                if frame_count % 3:
+                    x,y, self.face_width, self.face_height = processing.face_detection(raw_frame)
+                    self.face_position = x,y
+
+                # draw rectangle around face
+                cv2.rectangle(raw_frame, self.face_position, (self.face_position[0] + self.face_width,
+                                                              self.face_position[1] + self.face_height), (0, 255, 0), 2)
+
                 # check if the api call thread is already running. If not, start it up
                 if self.future_call and self.future_call.done():
 
-                    self.emotions = self.future_call.result()
-                    self.future_call = self.executor.submit(get_emotion,raw_frame)
+                    self.face_sentiment = self.future_call.result()
+                    self.future_call = self.executor.submit(processing.face_sentiment,raw_frame)
                     print("completed")
-
-
-                # STEP 2: detect any faces in the frame
-                self.faces = face_detection(raw_frame)
-
-                # draw rectangles around faces
-                for (x,y,w,h) in self.faces:
-                    cv2.rectangle(raw_frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-
-                if self.emotions: 
-                    print(self.emotions)
-                    # there is an emotion to work with
                 
-                # if frame_count == 60:
-                #     raw_frame, face_position = processing.face_detection(raw_frame)
+                # detect face sentiment
+                #if frame_count == 60:
+                #    self.face_sentiment = processing.face_sentiment(raw_frame)
+                #    frame_count = 0
 
-                #     if 200< face_position[0] < 400 and 100< face_position[1] < 300:
-                #         print('Yay')
+                # write sentiment
+                cv2.putText(raw_frame, self.face_sentiment, (50, 50), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=2,
+                            color=(0, 0, 255))
 
-                #     frame_count = 0
-
-                # talk to google emotion api
-
-                
+                # flip image so that it shows up properly in Zoom
+                raw_frame = cv2.flip(raw_frame, 1)
 
                 # convert frame to RGB
                 color_frame = cv2.cvtColor(raw_frame, cv2.COLOR_BGR2RGB)
@@ -110,16 +105,9 @@ class Control:
                 # STEP 3: send to virtual camera
                 virtual_cam.send(out_frame_rgba)
                 virtual_cam.sleep_until_next_frame()
-    
-    def __exit__(self, exec_type, exc_value, traceback):
-        self.cam.release()
-        self.api_thread.join()
-        self.executor.shutdown()
-        print('successfully freed resources')
 
 
 # run program
 if __name__ == '__main__':
     instance = Control()
     instance.run()
-    
