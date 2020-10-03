@@ -92,7 +92,7 @@ class Control:
                 
 
                 # write sentiment
-                cv2.putText(raw_frame, self.face_sentiment, (50, 50), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=2,
+                cv2.putText(raw_frame, self.face_sentiment, (50,150), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=2,
                             color=(0, 0, 255))
 
                 # flip image so that it shows up properly in Zoom
@@ -106,7 +106,8 @@ class Control:
                 out_frame_rgba[:, :, :3] = color_frame
                 out_frame_rgba[:, :, 3] = 255
 
-                c = CoinGame()
+                c = CoinGame(self.width, self.height)
+                c.bag.goto_random()
                 c.draw(out_frame_rgba)
 
                 # STEP 3: send to virtual camera
