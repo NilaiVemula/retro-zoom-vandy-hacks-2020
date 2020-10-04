@@ -8,6 +8,8 @@ from pynput import keyboard
 from CoinGame import CoinGame
 from coinscore import CoinScore
 from happypipe import HappyPipe
+from asteroidgame import AsteroidGame
+from video_filter import Filter
 
 
 class Control:
@@ -58,19 +60,23 @@ class Control:
         self.objects = []
 
         self.key_pressed = ''
-        
-        # coinGame object
-        self.coin_game = CoinGame(self.width,self.height)
+        self.game = None
         
         # create a coinscore and a happypipe
         self.coin_score = CoinScore()
         self.happy_pipe = HappyPipe()
 
-
         # coinGame object
         self.coin_game = CoinGame(self.width,self.height)
 
+
         self.need_to_find = ['Ball', 'Glasses']
+
+        # asteroid game object
+        self.asteroid_game = AsteroidGame(self.width, self.height)
+
+        # filter object
+        self.videofilter = Filter(self.width, self.height)
 
 
     def on_press(self, key):
@@ -78,6 +84,10 @@ class Control:
             # alphanumeric key
             if key.char == 'c':
                 self.key_pressed = 'c'
+            if key.char == 'a':
+                self.key_pressed = 'a'
+            if key.char == 'f':
+                self.key_pressed = 'f'
         except AttributeError:
             # special key
             pass
@@ -104,15 +114,30 @@ class Control:
                 ret, raw_frame = self.cam.read()
                 raw_frame = cv2.flip(raw_frame, 1)
 
+
                 # STEP 2: process frames
                 if raw_frame is None :
                     continue
 
-                # check key presses
-                if self.key_pressed == 'c':
-                    print('coin game has started')
+                # map keys to games:
+                keymap = {'c':self.coin_game,'a':self.asteroid_game}
+                # check if key pressed corresponds to a game
+                if self.key_pressed in keymap:
+                    # end the old game
+                    if self.game:
+                        self.game.end()
+                    # if the new game is different, then start the new game
+                    if keymap[self.key_pressed] != self.game:
+                        keymap[self.key_pressed].start()
+                        self.game = keymap[self.key_pressed]
+                    else:
+                        self.game = None
+                    # reset the key pressed
                     self.key_pressed = ''
-                    self.coin_game.start()
+                if self.key_pressed == 'f' :
+                    raw_frame = self.videofilter.start(raw_frame)
+                    self.key_pressed = ''
+
 
                 # detect face position
                 if frame_count % 3:
@@ -151,7 +176,7 @@ class Control:
                 # show pipe on screen
                 self.happy_pipe.overlay_pipe(raw_frame)
                 # show coin score on screen
-                self.coin_score.overlay_coins(raw_frame)
+                raw_frame = self.coin_score.overlay_coins(raw_frame)
 
                 # convert frame to RGB
                 color_frame = cv2.cvtColor(raw_frame, cv2.COLOR_BGR2RGB)
@@ -161,10 +186,16 @@ class Control:
                 out_frame_rgba[:, :, :3] = color_frame
                 out_frame_rgba[:, :, 3] = 255
 
-                if self.coin_game.state == 'running':
-                    self.coin_game.update((self.face_position[0]+self.face_width//2,
+                if self.game == self.coin_game:
+                    self.coin_game.update(self.coin_score,
+                                          (self.face_position[0]+self.face_width//2,
                                            self.face_position[1]+self.face_height//2))
                     self.coin_game.draw(out_frame_rgba)
+
+                if self.game == self.asteroid_game:
+                    self.asteroid_game.update((self.face_position[0],self.face_position[1], \
+                                               self.face_width, self.face_height))
+                    self.asteroid_game.draw(out_frame_rgba)
 
                 # STEP 3: send to virtual camera
                 virtual_cam.send(out_frame_rgba)

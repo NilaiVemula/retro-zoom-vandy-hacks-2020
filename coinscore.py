@@ -1,6 +1,8 @@
 # coinscore class
 
-import cv2
+from PIL import ImageFont, ImageDraw, Image  
+import cv2  
+import numpy as np  
 
 
 class CoinScore:
@@ -10,8 +12,24 @@ class CoinScore:
         
     
     def overlay_coins(self, frame):
-        cv2.putText(frame, str(self.coin_count), (500, 100), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0,0,0))
-        self.overlay_image(self.coin_img, frame, (500,100))
+        #cv2.putText(frame, str(self.coin_count), (500, 100), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0,0,0))
+        # Pass the image to PIL  
+        pil_im = Image.fromarray(frame)  
+           
+        draw = ImageDraw.Draw(pil_im)  
+        # use a truetype font  
+        font = ImageFont.truetype("assets\Pixeboy-z8XGD.ttf", 80)  
+           
+        # Draw the text  
+        draw.text((500, 75), str(self.coin_count), font=font)  
+           
+        # Get back the image to OpenCV  
+        frame = cv2.cvtColor(cv2.cvtColor(np.array(pil_im), cv2.COLOR_RGB2BGR), cv2.COLOR_BGR2RGB)
+        
+        self.overlay_image(self.coin_img, frame, (75,590))
+
+        return frame
+    
     
     def increment(self):
         self.coin_count += 1
