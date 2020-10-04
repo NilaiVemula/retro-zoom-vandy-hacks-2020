@@ -14,7 +14,7 @@ from asteroidgame import AsteroidGame
 class Control:
     """ main class for this project. Starts webcam capture and sends output to virtual camera"""
 
-    def __init__(self, webcam_source=0, width=640, height=480, fps=30):
+    def __init__(self, webcam_source=1, width=640, height=480, fps=30):
         """ sets user preferences for resolution and fps, starts webcam capture
 
         :param webcam_source: webcam source 0 is the laptop webcam and 1 is the usb webcam
@@ -156,7 +156,8 @@ class Control:
                 out_frame_rgba[:, :, 3] = 255
 
                 if self.game == self.coin_game:
-                    self.coin_game.update((self.face_position[0]+self.face_width//2,
+                    self.coin_game.update(self.coin_score,
+                                          (self.face_position[0]+self.face_width//2,
                                            self.face_position[1]+self.face_height//2))
                     self.coin_game.draw(out_frame_rgba)
 
