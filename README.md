@@ -53,6 +53,11 @@ First, install the following dependencies (you will need Python 3.8):
     - [`pyvirtualcam` python library](https://github.com/letmaik/pyvirtualcam)
     - numpy
     - open cv 
+    - Pillow
+    - plotly
+    - pandas
+    - google cloud vision
+    - pynput
 
 Instructions:
 1. Set up a virtual camera in OBS Studio

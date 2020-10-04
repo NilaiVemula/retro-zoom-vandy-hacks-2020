@@ -26,7 +26,7 @@ class CoinScore:
         # Get back the image to OpenCV  
         frame = cv2.cvtColor(cv2.cvtColor(np.array(pil_im), cv2.COLOR_RGB2BGR), cv2.COLOR_BGR2RGB)
         
-        self.overlay_image(self.coin_img, frame, (75,550))
+        self.overlay_image(self.coin_img, frame, (75,590))
 
         return frame
     

@@ -14,12 +14,12 @@ class HappyPipe:
         if self.progress_count < 1:
             return
         pipe_image = cv2.resize(self.pipe_image, (int(self.progress_count),100), interpolation = cv2.INTER_AREA)
-        self.overlay_image(pipe_image, frame, (50,50))
+        self.overlay_image(pipe_image, frame, (250,10))
 
     def update_pipe(self,sentiment, coin_score):
         if sentiment == 'joy':
             self.progress_count +=2
-        elif sentiment == 'anger' and self.progress_count > 1:
+        elif sentiment == 'anger' and self.progress_count > 0:
             self.progress_count -= 1
         if self.progress_count >= 300:
             self.progress_count = 1
