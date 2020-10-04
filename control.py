@@ -56,8 +56,11 @@ class Control:
 
         # start a thread to call the google cloud api and get the object from the frames
         self.future_call_1 = self.executor.submit(processing.localize_objects, None)
-
+        
+        # list of objects detected in the frame
         self.objects = []
+        # list of objects in the scavenger hunt that need to be found
+        self.need_to_find = ['Ball', 'Glasses']
 
         self.key_pressed = ''
         self.game = None
@@ -68,9 +71,6 @@ class Control:
 
         # coinGame object
         self.coin_game = CoinGame(self.width,self.height)
-
-
-        self.need_to_find = ['Ball', 'Glasses']
 
         # asteroid game object
         self.asteroid_game = AsteroidGame(self.width, self.height)
@@ -148,21 +148,21 @@ class Control:
                 cv2.rectangle(raw_frame, self.face_position, (self.face_position[0] + self.face_width,
                                                               self.face_position[1] + self.face_height), (0, 255, 0), 2)
 
-                # check if the api call thread is already running. If not, start it up
+                # Face Sentiment: check if the api call thread is already running. If not, start it up
                 if self.future_call and self.future_call.done():
 
                     self.face_sentiment = self.future_call.result()
                     self.future_call = self.executor.submit(processing.face_sentiment,raw_frame)
 
-                # check if the api call thread is already running. If not, start it up
+                # Object detection: check if the api call thread is already running. If not, start it up
                 if self.future_call_1 and self.future_call_1.done():
                     self.objects = self.future_call_1.result()
                     self.future_call_1 = self.executor.submit(processing.localize_objects, raw_frame)
-
-                found_objects = list(set(self.objects) & set(self.need_to_find))
-
-                for object in found_objects:
-                    self.need_to_find.remove(object)
+                    
+                    # remove found objects from the need to find list
+                    found_objects = list(set(self.objects) & set(self.need_to_find))
+                    for object in found_objects:
+                        self.need_to_find.remove(object)
 
                 print(self.need_to_find)
 
