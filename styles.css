@@ -1,0 +1,48 @@
+/* || General setup */
+* {
+    margin: 0;
+  }
+  .header {
+    font-family: "Baloo Tammudu 2", cursive;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    background-color: #636EFB;
+    color: #ecf0f1;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding: 15px;
+  }
+  .info{
+      background-color: white;
+  }
+  .games {
+      list-style-type: none;
+  }
+  .games > .button{
+    background-color: aqua;
+  }
+
+  .body{
+      background-color: #ecf0f1;
+      margin: 0 auto;
+  }
+  .wrapper{
+      background-color: #d8d9da;
+      display: flex;
+      flex-direction: column;
+      align-self: center;
+  }
+  .container {
+    width: 100%;
+    max-width: 1080px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+  .histogram{
+      width: 100%;
+  }

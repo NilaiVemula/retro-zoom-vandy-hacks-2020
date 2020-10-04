@@ -4,11 +4,17 @@ import datetime
 import os
 import json
 
+import IPython.display
+from IPython.display import Image
+import chart_studio.plotly as py
+import os
+
 class Visualization:
     def __init__(self, chart_type='Bar'):
         self.data = None
         self.visualization = None
         self.type = chart_type
+
 
     def get_data(self):
         if os.path.exists(f'productivity_data_{datetime.date.today()}.json'):
@@ -22,14 +28,19 @@ class Visualization:
         self.type = 'Histogram'
         self.chart = px.histogram(self.data, x='Time', color='Emotion', nbins=20,
                                   barnorm='percent', title='How Your Students are Feeling! - Live Data')
-        self.chart.show()
+        #self.chart.show()
+        if not os.path.exists("images"):
+            os.mkdir("images")
+        self.chart.write_image('images/histogram.jpeg')
+    
 
     def create_piechart(self):
         self.type = 'Pie'
         self.chart = px.pie(self.data, names='Emotion',
                             title=f'Students Felt on {datetime.date.today().strftime("%B %d, %Y")}')
-        self.chart.show()
-
+        if not os.path.exists("images"):
+            os.mkdir("images")
+        self.chart.write_image('images/pie.jpeg')
 
 if __name__ == "__main__":
     chart1 = Visualization()
