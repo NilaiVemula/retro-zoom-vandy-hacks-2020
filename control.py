@@ -193,8 +193,8 @@ class Control:
                     self.coin_game.draw(out_frame_rgba)
 
                 if self.game == self.asteroid_game:
-                    self.asteroid_game.update((self.face_position[0],self.face_position[1], \
-                                               self.face_width, self.face_height))
+                    self.asteroid_game.update((self.face_position[0] + self.face_width // 2, \
+                                               self.face_position[1] + self.face_width // 2))
                     self.asteroid_game.draw(out_frame_rgba)
 
                 # STEP 3: send to virtual camera

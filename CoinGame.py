@@ -6,6 +6,10 @@ import numpy as np
 import time
 import cv2
 import random
+import pathlib
+
+from playsound import playsound
+
 
 class CoinGame:
     
@@ -17,6 +21,9 @@ class CoinGame:
         self.coinbag_img = cv2.imread('assets/coinbag.png', cv2.IMREAD_UNCHANGED)
         self.coinbag_img = cv2.cvtColor(self.coinbag_img, cv2.COLOR_BGRA2RGBA)
 
+        # load in sound object 
+        self.sound_path = str(pathlib.Path(__file__).parent.absolute()/'assets/coins.wav')
+        self.sound_path_2 = str(pathlib.Path(__file__).parent.absolute()/'assets/gem.wav')
         # create a bag object
         self.bag = Actor(width, height,self.coinbag_img)
         self.bag.goto_random()
@@ -42,7 +49,12 @@ class CoinGame:
     def update(self, coin_score, center):
         if self.state == "running":
             if self.bag.contains(center):
+              
+                playsound(self.sound_path, False)
+                playsound(self.sound_path_2, False)
+                
                 coin_score.coin_count += 1;
+                
                 self.bag.goto_random()
 
                 self.create_coins(3, center)
@@ -59,7 +71,7 @@ class CoinGame:
                 if coin.pos[1] > self.screen_height:
                     todelete.append(i)
             # delete coins at each index
-            for idx in reversed(todelete):
+            for idx in sorted(todelete,reverse=True):
                 self.coins.pop(idx)
 
 
@@ -111,8 +123,8 @@ class Actor:
         self.height, self.width = self.image.shape[:2]
     
     def goto_random(self):
-        self.pos = random.randint(self.width, self.screen_width-self.width), \
-                   random.randint(self.height,self.screen_height-self.height)
+        self.pos = random.randint(self.width, self.screen_width-self.width*1.5), \
+                   random.randint(self.height,self.screen_height-self.height*1.5)
 
     def contains(self, point):
         return self.pos[0] < point[0] < self.pos[0] + self.width and \
