@@ -19,7 +19,9 @@
 - interactive games (retro style)
 - pop-up (timer)
 
-
+- group sentiment tracker for classrooms
+    - 15 sec demo with group zoom call and bar graphs
+    
 
 
 # Write-up
@@ -42,16 +44,20 @@ breakdown of features
 - google api
   - emotion analysis
   - object detection
+- plotly and dash for data analysis reports
+- matplotlib and tkinter for the classroom group sentiment
+
 
 
 ## Challenges I ran into
-- multithreading to speed up API requests
+- dropping frames -> multithreading to speed up API requests
 - image processing with opencv
 
 ## Accomplishments that I'm proud of
 
 - virtual webcam
 - pixel art
+- making my first GUI in Python
 
 ## What I learned
 - learned python
@@ -59,7 +65,7 @@ breakdown of features
 ## What's next for Retro Zoom
 
 ### Future Ideas
-- improve preformance
+- improve performance
 - make a more friendly UI
 
 ### Business Model
@@ -71,4 +77,3 @@ breakdown of features
 - freemium for indivduals
   - play games with your friends
   - upgrade to unlock more games, get emotional reports, in-app purchases for free coins
-  - 
