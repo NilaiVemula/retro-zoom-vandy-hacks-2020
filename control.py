@@ -7,6 +7,10 @@ import logger
 from pynput import keyboard
 
 from CoinGame import CoinGame
+from coinscore import CoinScore
+from happypipe import HappyPipe
+from asteroidgame import AsteroidGame
+import sys
 
 
 class Control:
@@ -54,15 +58,18 @@ class Control:
             processing.face_sentiment, None)
 
         self.key_pressed = ''
+        self.game = None
+        
+        # create a coinscore and a happypipe
+        self.coin_score = CoinScore()
+        self.happy_pipe = HappyPipe()
 
         # coinGame object
-        self.coin_game = CoinGame(self.width, self.height)
+        self.coin_game = CoinGame(self.width,self.height)
 
-        self.coin_count = 0
-        self.progress_count = 1
+        # asteroid game object
+        self.asteroid_game = AsteroidGame(self.width, self.height)
 
-        # coinGame object
-        self.coin_game = CoinGame(self.width, self.height)
 
         self.logger = logger.Logger()
     def on_press(self, key):
@@ -70,6 +77,11 @@ class Control:
             # alphanumeric key
             if key.char == 'c':
                 self.key_pressed = 'c'
+            if key.char == 'a':
+                self.key_pressed = 'a'
+            if key.char =='q':
+                self.key_pressed = 'q'
+
         except AttributeError:
             # special key
             pass
@@ -92,6 +104,9 @@ class Control:
 
             while True:
                 frame_count += 1
+                if self.key_pressed == 'q':
+                    self.logger.endTimer()
+                    sys.exit(0)
 
                 # STEP 1: capture video from webcam
                 ret, raw_frame = self.cam.read()
@@ -101,11 +116,22 @@ class Control:
                 if raw_frame is None :
                     continue
 
-                # check key presses
-                if self.key_pressed == 'c':
-                    print('coin game has started')
+                # map keys to games:
+                keymap = {'c':self.coin_game,'a':self.asteroid_game}
+                # check if key pressed corresponds to a game
+                if self.key_pressed in keymap:
+                    # end the old game
+                    if self.game:
+                        self.game.end()
+                    # if the new game is different, then start the new game
+                    if keymap[self.key_pressed] != self.game:
+                        keymap[self.key_pressed].start()
+                        self.game = keymap[self.key_pressed]
+                    else:
+                        self.game = None
+                    # reset the key pressed
                     self.key_pressed = ''
-                    self.coin_game.start()
+
 
                 # detect face position
                 if frame_count % 3:
@@ -121,57 +147,20 @@ class Control:
                 if self.future_call and self.future_call.done():
 
                     self.face_sentiment = self.future_call.result()
-                    self.future_call = self.executor.submit(
-                        processing.face_sentiment, raw_frame)
-
-                #log sentiment
+                    self.future_call = self.executor.submit(processing.face_sentiment,raw_frame)
+                
+                #logs current face sentiment
                 self.logger.log_emotion(self.face_sentiment)
-
                 # write sentiment
                 cv2.putText(raw_frame, self.face_sentiment, (50, 100), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=2,
                             color=(0, 0, 255))
-
-                if self.face_sentiment == 'joy':
-                    self.progress_count += 1
-                elif self.face_sentiment == 'angry' and self.progress_count > 1:
-                    self.progress_count -= 1
-                if self.progress_count >= 250:
-                    self.progress_count = 1
-                    self.coin_count = self.coin_count+1
-
-                pl_img = cv2.imread('assets\pipeline.png',
-                                    cv2.IMREAD_UNCHANGED)
-                pl_img = cv2.resize(
-                    pl_img, (int(100*self.progress_count/100), 100), interpolation=cv2.INTER_AREA)
-                x_offset = y_offset = 50
-                y1, y2 = y_offset, y_offset + pl_img.shape[0]
-                x1, x2 = x_offset, x_offset + pl_img.shape[1]
-
-                alpha_s = pl_img[:, :, 3] / 255.0
-                alpha_l = 1.0 - alpha_s
-
-                for c in range(0, 3):
-                    raw_frame[y1:y2, x1:x2, c] = (alpha_s * pl_img[:, :, c] +
-                                                  alpha_l * raw_frame[y1:y2, x1:x2, c])
-
-                cv2.putText(raw_frame, str(self.coin_count), (500, 100),
-                            fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 0, 0))
-
-                coin_img = cv2.imread('assets\coin.png', cv2.IMREAD_UNCHANGED)
-                x_offset = 550
-                y_offset = 75
-                y1, y2 = y_offset, y_offset + coin_img.shape[0]
-                x1, x2 = x_offset, x_offset + coin_img.shape[1]
-
-                alpha_s = coin_img[:, :, 3] / 255.0
-                alpha_l = 1.0 - alpha_s
-
-                for c in range(0, 3):
-                    raw_frame[y1:y2, x1:x2, c] = (alpha_s * coin_img[:, :, c] +
-                                                  alpha_l * raw_frame[y1:y2, x1:x2, c])
-
-                # flip image so that it shows up properly in Zoom
-                # raw_frame = cv2.flip(raw_frame, 1)
+                
+                # update pipe status
+                self.happy_pipe.update_pipe(self.face_sentiment, self.coin_score)
+                # show pipe on screen
+                self.happy_pipe.overlay_pipe(raw_frame)
+                # show coin score on screen
+                raw_frame = self.coin_score.overlay_coins(raw_frame)
 
                 # convert frame to RGB
                 color_frame = cv2.cvtColor(raw_frame, cv2.COLOR_BGR2RGB)
@@ -182,10 +171,15 @@ class Control:
                 out_frame_rgba[:, :, :3] = color_frame
                 out_frame_rgba[:, :, 3] = 255
 
-                if self.coin_game.state == 'running':
+                if self.game == self.coin_game:
                     self.coin_game.update((self.face_position[0]+self.face_width//2,
                                            self.face_position[1]+self.face_height//2))
                     self.coin_game.draw(out_frame_rgba)
+
+                if self.game == self.asteroid_game:
+                    self.asteroid_game.update((self.face_position[0],self.face_position[1], \
+                                               self.face_width, self.face_height))
+                    self.asteroid_game.draw(out_frame_rgba)
 
                 # STEP 3: send to virtual camera
                 virtual_cam.send(out_frame_rgba)

@@ -35,6 +35,10 @@ class CoinGame:
         self.state = "running"
         self.coins.clear()
 
+    def end(self):
+        self.state = "stopped"
+        self.coins.clear()
+
     def update(self, center):
         if self.state == "running":
             if self.bag.contains(center):
