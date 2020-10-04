@@ -8,12 +8,13 @@ from pynput import keyboard
 from CoinGame import CoinGame
 from coinscore import CoinScore
 from happypipe import HappyPipe
+from asteroidgame import AsteroidGame
 
 
 class Control:
     """ main class for this project. Starts webcam capture and sends output to virtual camera"""
 
-    def __init__(self, webcam_source=1, width=640, height=480, fps=30):
+    def __init__(self, webcam_source=0, width=640, height=480, fps=30):
         """ sets user preferences for resolution and fps, starts webcam capture
 
         :param webcam_source: webcam source 0 is the laptop webcam and 1 is the usb webcam
@@ -53,7 +54,7 @@ class Control:
         self.future_call = self.executor.submit(processing.face_sentiment, None)
 
         self.key_pressed = ''
-        self.game = ''
+        self.game = None
         
         # create a coinscore and a happypipe
         self.coin_score = CoinScore()
@@ -62,12 +63,17 @@ class Control:
         # coinGame object
         self.coin_game = CoinGame(self.width,self.height)
 
+        # asteroid game object
+        self.asteroid_game = AsteroidGame(self.width, self.height)
+
 
     def on_press(self, key):
         try:
             # alphanumeric key
             if key.char == 'c':
                 self.key_pressed = 'c'
+            if key.char == 'a':
+                self.key_pressed = 'a'
         except AttributeError:
             # special key
             pass
@@ -98,18 +104,22 @@ class Control:
                 if raw_frame is None :
                     continue
 
-                # check key presses
-                if self.key_pressed == 'c':
-                    if self.game == '':
-                        print('coin game has started')
-                        self.game = 'coin'
-                        self.key_pressed = ''
-                        self.coin_game.start()
-                    else :
-                        print('coint game has ended')
-                        self.game = ''
-                        self.key_pressed = ''
-                        self.coin_game.end()
+                # map keys to games:
+                keymap = {'c':self.coin_game,'a':self.asteroid_game}
+                # check if key pressed corresponds to a game
+                if self.key_pressed in keymap:
+                    # end the old game
+                    if self.game:
+                        self.game.end()
+                    # if the new game is different, then start the new game
+                    if keymap[self.key_pressed] != self.game:
+                        keymap[self.key_pressed].start()
+                        self.game = keymap[self.key_pressed]
+                    else:
+                        self.game = None
+                    # reset the key pressed
+                    self.key_pressed = ''
+
 
                 # detect face position
                 if frame_count % 3:
@@ -145,10 +155,15 @@ class Control:
                 out_frame_rgba[:, :, :3] = color_frame
                 out_frame_rgba[:, :, 3] = 255
 
-                if self.coin_game.state == 'running':
+                if self.game == self.coin_game:
                     self.coin_game.update((self.face_position[0]+self.face_width//2,
                                            self.face_position[1]+self.face_height//2))
                     self.coin_game.draw(out_frame_rgba)
+
+                if self.game == self.asteroid_game:
+                    self.asteroid_game.update((self.face_position[0],self.face_position[1], \
+                                               self.face_width, self.face_height))
+                    self.asteroid_game.draw(out_frame_rgba)
 
                 # STEP 3: send to virtual camera
                 virtual_cam.send(out_frame_rgba)
