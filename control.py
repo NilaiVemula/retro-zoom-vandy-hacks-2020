@@ -135,7 +135,7 @@ class Control:
                 # show pipe on screen
                 self.happy_pipe.overlay_pipe(raw_frame)
                 # show coin score on screen
-                self.coin_score.overlay_coins(raw_frame)
+                raw_frame = self.coin_score.overlay_coins(raw_frame)
 
                 # convert frame to RGB
                 color_frame = cv2.cvtColor(raw_frame, cv2.COLOR_BGR2RGB)
