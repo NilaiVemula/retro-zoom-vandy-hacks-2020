@@ -64,6 +64,7 @@ class Control:
         # coinGame object
         self.coin_game = CoinGame(self.width, self.height)
 
+        self.logger = logger.Logger()
     def on_press(self, key):
         try:
             # alphanumeric key
@@ -122,6 +123,9 @@ class Control:
                     self.face_sentiment = self.future_call.result()
                     self.future_call = self.executor.submit(
                         processing.face_sentiment, raw_frame)
+
+                #log sentiment
+                self.logger.log_emotion(self.face_sentiment)
 
                 # write sentiment
                 cv2.putText(raw_frame, self.face_sentiment, (50, 100), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=2,
@@ -191,4 +195,6 @@ class Control:
 # run program
 if __name__ == '__main__':
     instance = Control()
+    instance.logger.startTimer()
     instance.run()
+    instance.logger.endTimer()

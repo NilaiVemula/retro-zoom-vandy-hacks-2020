@@ -46,7 +46,7 @@ class Logger:
         if emotion != '':
             with open(f'productivity_data_{datetime.date.today()}.json') as json_file:
                 self.emotion_data['Emotion_Occurrences'].append(
-                    (str(datetime.datetime.now()).split()[1].replace(':', '-'), emotion))
+                    (datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), emotion))
                 self.update_average_emotion()
 
     def update_average_emotion(self):
@@ -68,10 +68,12 @@ class Logger:
             json.dump(current_data, f)
 
 if __name__ == "__main__":
-    logger1 = Logger()
-    logger1.startTimer()
-    logger1.log_emotion('Happy')
-    time.sleep(10)
-    logger1.log_emotion('Sad')
-    logger1.log_emotion('Sad')
-    logger1.endTimer()
+    log = Logger()
+    log.startTimer()
+    time.sleep(5)
+    log.log_emotion('Happy')
+    time.sleep(5)
+    log.log_emotion('Sad')
+    time.sleep(5)
+    log.log_emotion('Happy')
+    log.endTimer()
