@@ -14,10 +14,11 @@ class Visualization:
                     file_data = json.load(f)
                     file_data = file_data['Emotion_Data']['Emotion_Occurrences']
                     self.data = pd.DataFrame(file_data, columns=['Time', 'Emotion'])
-                    print(self.data)
+
     def create_visualization(self):
         self.chart = px.histogram(self.data, x='Time', color='Emotion', nbins=25)
         self.chart.show()
+
 if __name__ == "__main__":
     chart1 = Visualization()
     chart1.get_data()
