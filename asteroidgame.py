@@ -57,7 +57,7 @@ class AsteroidGame:
         self.state = "end"
         self.game_over = False
 
-    def update(self, center, frame):
+    def update(self, facerect, frame):
         self.count += 1
         if self.count % 15 == 0 and self.heart_index >= 0:
             ast = Actor(self.screen_width,self.screen_height, self.asteroid_image)
@@ -75,7 +75,9 @@ class AsteroidGame:
             ast.pos = np.array(ast.pos)
             ast.pos[0] += ast.xspeed 
             ast.pos[1] += ast.yspeed
-            if ast.contains((ast.pos[0],ast.pos[1],ast.image.shape[1],ast.image.shape[0]), center) and self.heart_index >= 0:
+            if ast.contains((facerect), (ast.pos[0]+ast.image.shape[0]//2, \
+                                         ast.pos[1]+ast.image.shape[1]//2)) \
+                                             and self.heart_index >= 0:
                 print("hit!")
                 playsound(self.sound_path)
                 self.hearts[self.heart_index].image = self.heart_broken_image

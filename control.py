@@ -155,8 +155,8 @@ class Control:
                     self.face_position = x,y
 
                 # draw rectangle around face
-                cv2.rectangle(raw_frame, self.face_position, (self.face_position[0] + self.face_width,
-                                                              self.face_position[1] + self.face_height), (0, 255, 0), 2)
+                # cv2.rectangle(raw_frame, self.face_position, (self.face_position[0] + self.face_width,
+                #                                               self.face_position[1] + self.face_height), (0, 255, 0), 2)
 
                 # Face Sentiment: check if the api call thread is already running. If not, start it up
                 if self.future_call and self.future_call.done():
@@ -178,8 +178,8 @@ class Control:
 
 
                 # write sentiment
-                cv2.putText(raw_frame, self.face_sentiment, (50, 100), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=2,
-                            color=(0, 0, 255))
+                # cv2.putText(raw_frame, self.face_sentiment, (50, 100), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=2,
+                #             color=(0, 0, 255))
                 
                 # update pipe status
                 self.happy_pipe.update_pipe(self.face_sentiment, self.coin_score)
@@ -223,8 +223,8 @@ class Control:
 
                 if self.game == self.asteroid_game:
 
-                    self.asteroid_game.update((self.face_position[0] + self.face_width // 2, \
-                                               self.face_position[1] + self.face_width // 2), raw_frame)
+                    self.asteroid_game.update((self.face_position[0], self.face_width, \
+                                               self.face_position[1], self.face_height), raw_frame)
                     out_frame_rgba = self.asteroid_game.draw(out_frame_rgba)
 
                 
