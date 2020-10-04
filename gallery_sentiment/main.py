@@ -5,13 +5,25 @@ from sentiment import face_sentiment
 
 import numpy as np
 
+import pandas as pd
+
+import matplotlib
+matplotlib.use('TkAgg')
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+from matplotlib.figure import Figure
+import tkinter as tk
+import tkinter.ttk as ttk
+import sys
 
 
-
-class GroupSentiment:
-    def __init__(self):
-        self.window = ''
+class GroupSentiment(tk.Frame):
+    def __init__(self, master=None):
         self.toplist, self.winlist = [], []
+        tk.Frame.__init__(self,master)
+        self.createWidgets()
+
 
     def enum_cb(self, hwnd, results):
         self.winlist.append((hwnd, win32gui.GetWindowText(hwnd)))
@@ -37,19 +49,46 @@ class GroupSentiment:
         img = np.array(img)
         return img
 
-    def run(self):
-        print('Starting')
+    def createWidgets(self):
+        fig = plt.figure(figsize=(8, 8))
+        ax = fig.add_subplot(111)
+
+
+        # bar1.get_tk_widget().pack(side=tk.LEFT, fill=tk.BOTH)
+
+        canvas = FigureCanvasTkAgg(fig, master=root)
+        canvas.get_tk_widget().grid(row=0, column=1)
+        canvas.draw()
+
+        self.plotbutton = tk.Button(master=root, text="plot", command=lambda: self.plot(canvas, ax))
+        self.plotbutton.grid(row=0, column=0)
 
         while True:
-            screenshot = self.take_screenshot()
-            if screenshot is not None:
-                emotions = face_sentiment(screenshot)
-                print(emotions)
-            else:
-                print('fuck')
+            self.plot(canvas, ax)
+
+    def plot(self, canvas, ax):
+        print('Starting')
+
+        screenshot = self.take_screenshot()
+        if screenshot is not None:
+            emotions = face_sentiment(screenshot)
+            print(emotions)
+
+            data = {'Emotions': ['anger', 'joy', 'surprise', 'sorrow'],
+                     'Values': emotions
+                     }
+            df = pd.DataFrame(data, columns=['Emotions', 'Values'])
+            df = df[['Emotions', 'Values']].groupby('Emotions').sum()
+            df.plot(kind='bar', legend=True, ax=ax)
+            ax.set_title('Group Sentiment')
+            canvas.draw()
+            ax.clear()
+        else:
+            print('fuck')
 
 
 
 if __name__ == '__main__':
-    a = GroupSentiment()
-    a.run()
+    root = tk.Tk()
+    app = GroupSentiment(master=root)
+    app.mainloop()
