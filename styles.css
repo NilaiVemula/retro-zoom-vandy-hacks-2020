@@ -1,50 +1,110 @@
 /* || General setup */
 * {
-    margin: 0;
-  }
-  .header {
-    font-family: "Baloo Tammudu 2", cursive;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    background-color: #636EFB;
-    color: #ecf0f1;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 15px;
-    padding: 15px;
-  }
-  .info{
-      background-color: white;
-      line-height: 1.8;
-      padding-left: 15px;
-  }
-  .games > ul {
-      list-style-type: none;
-  }
-  .games > ul >button{
-    background-color: aqua;
-  }
+  margin: 0;
+}
+h1{
+    font-family: 'Secular One', sans-serif;
+}
+h2,
+h3 {
+  font-family: "Roboto", sans-serif;
+}
 
-  .body{
-      background-color: #ecf0f1;
-      margin: 0 auto;
-  }
-  .wrapper{
-      background-color: #d8d9da;
-      display: flex;
-      flex-direction: column;
-      align-self: center;
-  }
-  .container {
-    width: 100%;
-    max-width: 1080px;
-    margin: 0 auto;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    justify-content: space-between;
-  }
-  .histogram{
-      width: 100%;
-  }
+h1 {
+  color: white;
+}
+.header {
+  font-family: "Roboto", sans-serif;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  background-color: #636efb;
+  color: #ecf0f1;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  padding: 15px;
+}
+.info {
+  background-color: white;
+  line-height: 1.8;
+  font-size: large;
+  padding-left: 15px;
+  margin: 0 auto;
+}
+.games ul {
+  display: flex;
+  justify-content: space-around;
+  margin: 15px auto;
+}
+.info h1 {
+  color: black;
+}
+.games > ul {
+  list-style-type: none;
+}
+
+#button1 {
+  background-color: #008CBA; /* Green */
+  border-radius: 4px;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+#button1:hover{
+    background-color: #017ca5;
+}
+#button2 {
+  background-color: #f1c40f; /* Green */
+  border-radius: 4px;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+#button2:hover{
+    background-color: #ddb412;
+}
+#button3 {
+  background-color: #2ecc71; /* Green */
+  border-radius: 4px;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+#button3:hover{
+    background-color: #28b964;
+}
+
+.body {
+  background-color: #ecf0f1;
+  margin: 0 auto;
+}
+.wrapper {
+  background-color: #d8d9da;
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+}
+.container {
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.histogram {
+  width: 100%;
+}
