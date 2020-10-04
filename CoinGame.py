@@ -46,11 +46,15 @@ class CoinGame:
         self.state = "stopped"
         self.coins.clear()
 
-    def update(self, center):
+    def update(self, coin_score, center):
         if self.state == "running":
             if self.bag.contains(center):
+              
                 playsound(self.sound_path, False)
                 playsound(self.sound_path_2, False)
+                
+                coin_score.coin_count += 1;
+                
                 self.bag.goto_random()
 
                 self.create_coins(3, center)

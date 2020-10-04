@@ -9,12 +9,13 @@ from CoinGame import CoinGame
 from coinscore import CoinScore
 from happypipe import HappyPipe
 from asteroidgame import AsteroidGame
+from video_filter import Filter
 
 
 class Control:
     """ main class for this project. Starts webcam capture and sends output to virtual camera"""
 
-    def __init__(self, webcam_source=0, width=640, height=480, fps=30):
+    def __init__(self, webcam_source=1, width=640, height=480, fps=30):
         """ sets user preferences for resolution and fps, starts webcam capture
 
         :param webcam_source: webcam source 0 is the laptop webcam and 1 is the usb webcam
@@ -53,6 +54,14 @@ class Control:
         self.executor = ThreadPoolExecutor(max_workers=1)
         self.future_call = self.executor.submit(processing.face_sentiment, None)
 
+        # start a thread to call the google cloud api and get the object from the frames
+        self.future_call_1 = self.executor.submit(processing.localize_objects, None)
+        
+        # list of objects detected in the frame
+        self.objects = []
+        # list of objects in the scavenger hunt that need to be found
+        self.need_to_find = ['Ball', 'Glasses']
+
         self.key_pressed = ''
         self.game = None
         
@@ -66,6 +75,9 @@ class Control:
         # asteroid game object
         self.asteroid_game = AsteroidGame(self.width, self.height)
 
+        # filter object
+        self.videofilter = Filter(self.width, self.height)
+
 
     def on_press(self, key):
         try:
@@ -74,6 +86,8 @@ class Control:
                 self.key_pressed = 'c'
             if key.char == 'a':
                 self.key_pressed = 'a'
+            if key.char == 'f':
+                self.key_pressed = 'f'
         except AttributeError:
             # special key
             pass
@@ -100,6 +114,7 @@ class Control:
                 ret, raw_frame = self.cam.read()
                 raw_frame = cv2.flip(raw_frame, 1)
 
+
                 # STEP 2: process frames
                 if raw_frame is None :
                     continue
@@ -119,6 +134,9 @@ class Control:
                         self.game = None
                     # reset the key pressed
                     self.key_pressed = ''
+                if self.key_pressed == 'f' :
+                    raw_frame = self.videofilter.start(raw_frame)
+                    self.key_pressed = ''
 
 
                 # detect face position
@@ -130,12 +148,25 @@ class Control:
                 cv2.rectangle(raw_frame, self.face_position, (self.face_position[0] + self.face_width,
                                                               self.face_position[1] + self.face_height), (0, 255, 0), 2)
 
-                # check if the api call thread is already running. If not, start it up
+                # Face Sentiment: check if the api call thread is already running. If not, start it up
                 if self.future_call and self.future_call.done():
 
                     self.face_sentiment = self.future_call.result()
                     self.future_call = self.executor.submit(processing.face_sentiment,raw_frame)
-                
+
+                # Object detection: check if the api call thread is already running. If not, start it up
+                if self.future_call_1 and self.future_call_1.done():
+                    self.objects = self.future_call_1.result()
+                    self.future_call_1 = self.executor.submit(processing.localize_objects, raw_frame)
+                    
+                    # remove found objects from the need to find list
+                    found_objects = list(set(self.objects) & set(self.need_to_find))
+                    for object in found_objects:
+                        self.need_to_find.remove(object)
+
+                print(self.need_to_find)
+
+
                 # write sentiment
                 cv2.putText(raw_frame, self.face_sentiment, (50, 100), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=2,
                             color=(0, 0, 255))
@@ -145,7 +176,7 @@ class Control:
                 # show pipe on screen
                 self.happy_pipe.overlay_pipe(raw_frame)
                 # show coin score on screen
-                self.coin_score.overlay_coins(raw_frame)
+                raw_frame = self.coin_score.overlay_coins(raw_frame)
 
                 # convert frame to RGB
                 color_frame = cv2.cvtColor(raw_frame, cv2.COLOR_BGR2RGB)
@@ -156,7 +187,8 @@ class Control:
                 out_frame_rgba[:, :, 3] = 255
 
                 if self.game == self.coin_game:
-                    self.coin_game.update((self.face_position[0]+self.face_width//2,
+                    self.coin_game.update(self.coin_score,
+                                          (self.face_position[0]+self.face_width//2,
                                            self.face_position[1]+self.face_height//2))
                     self.coin_game.draw(out_frame_rgba)
 
