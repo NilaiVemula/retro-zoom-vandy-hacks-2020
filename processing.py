@@ -82,3 +82,43 @@ def face_detection(frame):
         position_x, position_y ,width,height = x, y, w, h
 
     return position_x, position_y,width,height
+
+def localize_objects(frame):
+    """Localize objects in the local image.
+
+    Args:
+    path: The path to the local file.
+    """
+
+    # initial function call with multithreading won't have a frame
+    if frame is None:
+        return []
+
+    # Convert to an image, then write to a buffer.
+    image_from_frame = Image.fromarray(np.uint8(frame))
+    buffer = io.BytesIO()
+    image_from_frame.save(buffer, format='PNG')
+    buffer.seek(0)
+
+    # Use the buffer like a file.
+    content = buffer.read()
+
+    image = vision.Image(content=content)
+
+    objects = client.object_localization(
+        image=image).localized_object_annotations
+
+    # print('Number of objects found: {}'.format(len(objects)))
+    # for object_ in objects:
+    #     print('\n{} (confidence: {})'.format(object_.name, object_.score))
+    #     print('Normalized bounding polygon vertices: ')
+    #     for vertex in object_.bounding_poly.normalized_vertices:
+    #         print(' - ({}, {})'.format(vertex.x, vertex.y))
+
+    if objects:
+        l = [o.name for o in objects]
+        print(l)
+    else:
+        l = []
+    return l
+
