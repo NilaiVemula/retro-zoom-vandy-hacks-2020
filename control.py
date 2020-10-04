@@ -1,5 +1,6 @@
 import cv2
 import pyvirtualcam
+from PIL import ImageFont, ImageDraw, Image
 import numpy as np
 import processing
 from concurrent.futures import ThreadPoolExecutor
@@ -15,7 +16,7 @@ from video_filter import Filter
 class Control:
     """ main class for this project. Starts webcam capture and sends output to virtual camera"""
 
-    def __init__(self, webcam_source=1, width=640, height=480, fps=30):
+    def __init__(self, webcam_source=0, width=640, height=480, fps=30):
         """ sets user preferences for resolution and fps, starts webcam capture
 
         :param webcam_source: webcam source 0 is the laptop webcam and 1 is the usb webcam
@@ -60,7 +61,8 @@ class Control:
         # list of objects detected in the frame
         self.objects = []
         # list of objects in the scavenger hunt that need to be found
-        self.need_to_find = ['Ball', 'Glasses']
+        self.need_to_find = ['Person', 'Glasses']
+        self.scavenger = False
 
         self.key_pressed = ''
         self.game = None
@@ -82,12 +84,7 @@ class Control:
     def on_press(self, key):
         try:
             # alphanumeric key
-            if key.char == 'c':
-                self.key_pressed = 'c'
-            if key.char == 'a':
-                self.key_pressed = 'a'
-            if key.char == 'f':
-                self.key_pressed = 'f'
+            self.key_pressed = str(key.char)
         except AttributeError:
             # special key
             pass
@@ -126,17 +123,30 @@ class Control:
                     # end the old game
                     if self.game:
                         self.game.end()
+                    self.scavenger = False
                     # if the new game is different, then start the new game
                     if keymap[self.key_pressed] != self.game:
                         keymap[self.key_pressed].start()
                         self.game = keymap[self.key_pressed]
                     else:
                         self.game = None
+                    
                     # reset the key pressed
                     self.key_pressed = ''
-                if self.key_pressed == 'f' :
+                # retro filter
+                if self.key_pressed == 'f':
                     raw_frame = self.videofilter.start(raw_frame)
                     self.key_pressed = ''
+                # scavenger hunt game
+                if self.key_pressed == 's': 
+                    self.key_pressed = ''
+                    
+                    self.scavenger = not self.scavenger
+                    if self.game:
+                        self.game.end()
+                        self.game = None
+                    self.need_to_find = ['Person', 'Glasses']
+
 
 
                 # detect face position
@@ -155,16 +165,16 @@ class Control:
                     self.future_call = self.executor.submit(processing.face_sentiment,raw_frame)
 
                 # Object detection: check if the api call thread is already running. If not, start it up
-                if self.future_call_1 and self.future_call_1.done():
+                # only do this if the scav hunt game is running
+                if self.scavenger and self.future_call_1 and self.future_call_1.done():
                     self.objects = self.future_call_1.result()
                     self.future_call_1 = self.executor.submit(processing.localize_objects, raw_frame)
+                    
                     
                     # remove found objects from the need to find list
                     found_objects = list(set(self.objects) & set(self.need_to_find))
                     for object in found_objects:
                         self.need_to_find.remove(object)
-
-                print(self.need_to_find)
 
 
                 # write sentiment
@@ -178,6 +188,25 @@ class Control:
                 # show coin score on screen
                 raw_frame = self.coin_score.overlay_coins(raw_frame)
 
+                # display need to find objects
+                if self.scavenger:
+                    pil_im = Image.fromarray(raw_frame)
+                    
+                    draw = ImageDraw.Draw(pil_im)
+
+                    font = ImageFont.truetype("assets\Pixeboy-z8XGD.ttf", 50)
+                    
+                    # draw the text
+                    if len(self.need_to_find) > 0:
+                        # print(self.need_to_find)
+                        draw.text((50,65), "Show Me:",font=font)
+                        for i in range(len(self.need_to_find)):
+                            draw.text((50,115+50*i), self.need_to_find[i], font=font)
+                    else:
+                        draw.text((50,65), "I am Satisfied", font=font)
+                    
+                    raw_frame = cv2.cvtColor(cv2.cvtColor(np.array(pil_im), cv2.COLOR_RGB2BGR), cv2.COLOR_BGR2RGB)
+        
                 # convert frame to RGB
                 color_frame = cv2.cvtColor(raw_frame, cv2.COLOR_BGR2RGB)
 
@@ -197,6 +226,7 @@ class Control:
                                                self.face_position[1] + self.face_width // 2))
                     self.asteroid_game.draw(out_frame_rgba)
 
+                
                 # STEP 3: send to virtual camera
                 virtual_cam.send(out_frame_rgba)
                 virtual_cam.sleep_until_next_frame()
