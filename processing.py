@@ -92,7 +92,7 @@ def localize_objects(frame):
 
     # initial function call with multithreading won't have a frame
     if frame is None:
-        return ''
+        return []
 
     # Convert to an image, then write to a buffer.
     image_from_frame = Image.fromarray(np.uint8(frame))
@@ -108,12 +108,17 @@ def localize_objects(frame):
     objects = client.object_localization(
         image=image).localized_object_annotations
 
-    print('Number of objects found: {}'.format(len(objects)))
-    for object_ in objects:
-        print('\n{} (confidence: {})'.format(object_.name, object_.score))
-        print('Normalized bounding polygon vertices: ')
-        for vertex in object_.bounding_poly.normalized_vertices:
-            print(' - ({}, {})'.format(vertex.x, vertex.y))
+    # print('Number of objects found: {}'.format(len(objects)))
+    # for object_ in objects:
+    #     print('\n{} (confidence: {})'.format(object_.name, object_.score))
+    #     print('Normalized bounding polygon vertices: ')
+    #     for vertex in object_.bounding_poly.normalized_vertices:
+    #         print(' - ({}, {})'.format(vertex.x, vertex.y))
 
-    return objects
+    if objects:
+        l = [o.name for o in objects]
+        print(l)
+    else:
+        l = []
+    return l
 

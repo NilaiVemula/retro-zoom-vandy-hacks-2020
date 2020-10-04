@@ -55,7 +55,7 @@ class Control:
         # start a thread to call the google cloud api and get the object from the frames
         self.future_call_1 = self.executor.submit(processing.localize_objects, None)
 
-        self.objects = ''
+        self.objects = []
 
         self.key_pressed = ''
         
@@ -69,6 +69,8 @@ class Control:
 
         # coinGame object
         self.coin_game = CoinGame(self.width,self.height)
+
+        self.need_to_find = ['Ball', 'Glasses']
 
 
     def on_press(self, key):
@@ -131,6 +133,14 @@ class Control:
                 if self.future_call_1 and self.future_call_1.done():
                     self.objects = self.future_call_1.result()
                     self.future_call_1 = self.executor.submit(processing.localize_objects, raw_frame)
+
+                found_objects = list(set(self.objects) & set(self.need_to_find))
+
+                for object in found_objects:
+                    self.need_to_find.remove(object)
+
+                print(self.need_to_find)
+
 
                 # write sentiment
                 cv2.putText(raw_frame, self.face_sentiment, (50, 100), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=2,
