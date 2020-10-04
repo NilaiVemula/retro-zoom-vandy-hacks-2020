@@ -13,7 +13,7 @@ from happypipe import HappyPipe
 class Control:
     """ main class for this project. Starts webcam capture and sends output to virtual camera"""
 
-    def __init__(self, webcam_source=0, width=640, height=480, fps=30):
+    def __init__(self, webcam_source=1, width=640, height=480, fps=30):
         """ sets user preferences for resolution and fps, starts webcam capture
 
         :param webcam_source: webcam source 0 is the laptop webcam and 1 is the usb webcam
@@ -51,6 +51,11 @@ class Control:
         # start a thread to call the google cloud api and get the sentiment from the frames
         self.executor = ThreadPoolExecutor(max_workers=1)
         self.future_call = self.executor.submit(processing.face_sentiment, None)
+
+        # start a thread to call the google cloud api and get the object from the frames
+        self.future_call_1 = self.executor.submit(processing.localize_objects, None)
+
+        self.objects = ''
 
         self.key_pressed = ''
         
@@ -121,7 +126,12 @@ class Control:
 
                     self.face_sentiment = self.future_call.result()
                     self.future_call = self.executor.submit(processing.face_sentiment,raw_frame)
-                
+
+                # check if the api call thread is already running. If not, start it up
+                if self.future_call_1 and self.future_call_1.done():
+                    self.objects = self.future_call_1.result()
+                    self.future_call_1 = self.executor.submit(processing.localize_objects, raw_frame)
+
                 # write sentiment
                 cv2.putText(raw_frame, self.face_sentiment, (50, 100), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=2,
                             color=(0, 0, 255))
