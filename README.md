@@ -1,5 +1,7 @@
 # vandy-hacks-2020: Retro Zoom
 
+Full video demo: https://youtu.be/WGBdyyA_2VQ
+
 Pitch video: https://youtu.be/KRNiMF1ev3Y
 
 Scavenger hunt demo: https://youtu.be/ETCymdAjdQI
@@ -13,7 +15,7 @@ Our team has been stuck on Zoom meetings for the past six months. While some of 
 
 ## What it does
 
-Our project, Retro Zoom, contains a series of interactive plug-ins that improve the overall Zoom experience. At the heart of our project, we monitor the user’s sentiment by analyzing their facial expressions. Using this data, we suggest activities for the user. To help fight Zoom fatigue, the user can select from a few of retro-themed games: Coin Grab, Scavenger Hunt, and Asteroid Dodge. At the end of their Zoom meeting, the user can generate a report of their data throughout the meeting to monitor their emotional wellbeing. For corporate or educational users, we feature group sentiment analysis for Zoom calls, where administrators can monitor the overall sentiment of their meeting attendees. This data will empower meeting hosts to calibrate their behavior to their audience in real-time.
+Our project, Retro Zoom, contains a series of interactive plug-ins that improve the overall Zoom experience. At the heart of our project, we monitor the user’s sentiment by analyzing their facial expressions. Using this data, we suggest activities for the user. To help fight Zoom fatigue, the user can select from a few of retro-themed games: Coin Grab, Scavenger Hunt, and Asteroid Dodge. At the end of their Zoom meeting, the user can generate a report of their data throughout the meeting to monitor their emotional wellbeing. For corporate or educational users, we feature group sentiment analysis for Zoom calls, where administrators can monitor the overall sentiment of their meeting attendees. This data will empower meeting hosts to calibrate their behavior to their audience in real-time. The application also empowers Zoom students to understand their own sentiment during the call by growing a mario-style pipe when the user is joyous and shrinking the pipe when the user is angry.
 
 ## How I built it
 
@@ -70,6 +72,7 @@ Most importantly, we are proud of the fact that we successfully built a tool tha
 The performance of Retro Zoom could be further improved. Our current bottleneck is reading frames from the real camera on the device. The UI/UX could also use some touching up with more helpful instructions on how to navigate the app. Finally, we would like to extend our product to MacOS and Linux, as our current demo only works in Windows.
 
 As a product, we believe Retro Zoom has potential business value. Some potential customers would include schools and corporations hoping to increase Zoom engagement during prolonged work-from-home periods. Teachers or managers can monitor student's attention/sentiment during classes or meetings and have live updates. These users can use this data to gauge their audience’s emotions calibrate their presentation-style in real-time to be more engaging. For more casual users, we propose a freemium model where users can take breaks during their Zoom meetings to play a short game or groups of friends play games together and compete. This business model would draw in customers through free games and data analytics, and we would provide a premium plan that could unlock more games and deeper insights into the user’s emotional wellbeing during their Zoom meetings. 
+
 
 
 
