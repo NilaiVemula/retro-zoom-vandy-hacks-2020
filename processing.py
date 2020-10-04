@@ -117,7 +117,7 @@ def localize_objects(frame):
 
     if objects:
         l = [o.name for o in objects]
-        print(l)
+        #print(l)
     else:
         l = []
     return l

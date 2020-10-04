@@ -1,5 +1,6 @@
 # asteroid game 
 
+from PIL import ImageFont, ImageDraw, Image
 import cv2
 import random
 import numpy as np
@@ -39,6 +40,7 @@ class AsteroidGame:
         self.heart_index = 2
 
         self.state = "start"
+        self.game_over = False
         
 
     
@@ -53,8 +55,9 @@ class AsteroidGame:
     def end(self):
         self.asteroids.clear()
         self.state = "end"
+        self.game_over = False
 
-    def update(self, center):
+    def update(self, center, frame):
         self.count += 1
         if self.count % 15 == 0 and self.heart_index >= 0:
             ast = Actor(self.screen_width,self.screen_height, self.asteroid_image)
@@ -78,9 +81,12 @@ class AsteroidGame:
                 self.hearts[self.heart_index].image = self.heart_broken_image
                 self.heart_index -= 1
                 toremove.append(i) 
+            if self.heart_index == -1:
+                self.game_over = True
         for idx in sorted(toremove, reverse=True):
-            print(idx)
             self.asteroids.pop(idx)
+            
+        
         
         # remove any asteroids that go below the screen
         toremove = []
@@ -90,7 +96,6 @@ class AsteroidGame:
         for idx in sorted(toremove, reverse=True):
             self.asteroids.pop(idx)
         
-        print(len(self.asteroids))
     
     def draw(self,frame):
         for ast in self.asteroids:
@@ -98,6 +103,14 @@ class AsteroidGame:
         
         for h in self.hearts:
             self.overlay_image(h.image, frame, (h.pos[1],h.pos[0]))
+        if self.game_over:
+            pil_im = Image.fromarray(frame)
+            draw = ImageDraw.Draw(pil_im)
+            font = ImageFont.truetype("assets\Pixeboy-z8XGD.ttf", 80)
+            draw.text((280,self.screen_height-120), "game over", font=font)
+            frame = cv2.cvtColor(cv2.cvtColor(np.array(pil_im), cv2.COLOR_RGBA2BGRA), cv2.COLOR_BGRA2RGBA)
+            
+        return frame  
         
     
     def overlay_image(self, image, frame, offset):
