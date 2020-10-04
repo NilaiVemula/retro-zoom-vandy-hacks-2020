@@ -16,9 +16,11 @@ class Visualization:
                     self.data = pd.DataFrame(file_data, columns=['Time', 'Emotion'])
                     print(self.data)
     def create_visualization(self):
-        self.chart = px.histogram(self.data, x='Time', color='Emotion', nbins=25)
-        self.chart.show()
+        self.chart = px.histogram(self.data, x='Time', color='Emotion', nbins=20, barnorm='percent')
+        #self.chart.show()
 if __name__ == "__main__":
     chart1 = Visualization()
     chart1.get_data()
     chart1.create_visualization()
+
+    chart1.chart.write_html('tmp.html', auto_open=True)
