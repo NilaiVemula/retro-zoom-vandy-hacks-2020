@@ -9,6 +9,7 @@ from CoinGame import CoinGame
 from coinscore import CoinScore
 from happypipe import HappyPipe
 from asteroidgame import AsteroidGame
+from video_filter import Filter
 
 
 class Control:
@@ -66,6 +67,9 @@ class Control:
         # asteroid game object
         self.asteroid_game = AsteroidGame(self.width, self.height)
 
+        # filter object
+        self.videofilter = Filter(self.width, self.height)
+
 
     def on_press(self, key):
         try:
@@ -74,6 +78,8 @@ class Control:
                 self.key_pressed = 'c'
             if key.char == 'a':
                 self.key_pressed = 'a'
+            if key.char == 'f':
+                self.key_pressed = 'f'
         except AttributeError:
             # special key
             pass
@@ -100,6 +106,7 @@ class Control:
                 ret, raw_frame = self.cam.read()
                 raw_frame = cv2.flip(raw_frame, 1)
 
+
                 # STEP 2: process frames
                 if raw_frame is None :
                     continue
@@ -118,6 +125,9 @@ class Control:
                     else:
                         self.game = None
                     # reset the key pressed
+                    self.key_pressed = ''
+                if self.key_pressed == 'f' :
+                    raw_frame = self.videofilter.start(raw_frame)
                     self.key_pressed = ''
 
 
