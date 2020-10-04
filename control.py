@@ -13,7 +13,7 @@ from happypipe import HappyPipe
 class Control:
     """ main class for this project. Starts webcam capture and sends output to virtual camera"""
 
-    def __init__(self, webcam_source=0, width=640, height=480, fps=30):
+    def __init__(self, webcam_source=1, width=640, height=480, fps=30):
         """ sets user preferences for resolution and fps, starts webcam capture
 
         :param webcam_source: webcam source 0 is the laptop webcam and 1 is the usb webcam
@@ -53,14 +53,11 @@ class Control:
         self.future_call = self.executor.submit(processing.face_sentiment, None)
 
         self.key_pressed = ''
-        
-        # coinGame object
-        self.coin_game = CoinGame(self.width,self.height)
+        self.game = ''
         
         # create a coinscore and a happypipe
         self.coin_score = CoinScore()
         self.happy_pipe = HappyPipe()
-
 
         # coinGame object
         self.coin_game = CoinGame(self.width,self.height)
@@ -103,9 +100,16 @@ class Control:
 
                 # check key presses
                 if self.key_pressed == 'c':
-                    print('coin game has started')
-                    self.key_pressed = ''
-                    self.coin_game.start()
+                    if self.game == '':
+                        print('coin game has started')
+                        self.game = 'coin'
+                        self.key_pressed = ''
+                        self.coin_game.start()
+                    else :
+                        print('coint game has ended')
+                        self.game = ''
+                        self.key_pressed = ''
+                        self.coin_game.end()
 
                 # detect face position
                 if frame_count % 3:

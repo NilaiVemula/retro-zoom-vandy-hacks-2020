@@ -18,10 +18,10 @@ class HappyPipe:
 
     def update_pipe(self,sentiment, coin_score):
         if sentiment == 'joy':
-            self.progress_count +=1
-        elif sentiment == 'angry' and self.progress_count > 1:
+            self.progress_count +=2
+        elif sentiment == 'anger' and self.progress_count > 1:
             self.progress_count -= 1
-        if self.progress_count >= 250:
+        if self.progress_count >= 300:
             self.progress_count = 1
             coin_score.increment()
 

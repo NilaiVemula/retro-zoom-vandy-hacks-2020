@@ -11,7 +11,7 @@ class CoinScore:
     
     def overlay_coins(self, frame):
         cv2.putText(frame, str(self.coin_count), (500, 100), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0,0,0))
-        self.overlay_image(self.coin_img, frame, (500,100))
+        self.overlay_image(self.coin_img, frame, (75,550))
     
     def increment(self):
         self.coin_count += 1
