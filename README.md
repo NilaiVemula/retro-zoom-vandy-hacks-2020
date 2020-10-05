@@ -1,5 +1,9 @@
 # Retro Zoom (Vandy Hacks VII - 10/4/2020)
 
+<div valign="bottom">
+
+<img src="assets/zoom-icon.png" width="33%" align="right" valign="top">
+
 **Description**: We made Zoom more engaging through computer vision, retro graphics, sentiment tracking, and data analytics.
 
 **Built by**: Nilai Vemula, Carly Bernstein, Jack Walton, Shiv Patel
@@ -8,6 +12,10 @@
 :trophy: Most creative virtual peer-to-peer collaboration engagement aid (Alliance Bernstein)
 
 :trophy: Best Use of Google Cloud: COVID-19 Hackathon Fund
+
+
+</div>
+
 
 ## Demos
 
