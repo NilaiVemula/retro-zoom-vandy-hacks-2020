@@ -84,7 +84,7 @@ class GroupSentiment(tk.Frame):
             canvas.draw()
             ax.clear()
         else:
-            print('fuck')
+            print('ERROR')
 
 
 
