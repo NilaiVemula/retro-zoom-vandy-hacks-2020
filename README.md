@@ -35,7 +35,7 @@ Our team has been stuck on Zoom meetings for the past six months. While some of 
 
 Our project, Retro Zoom, contains a series of interactive plug-ins that improve the overall Zoom experience. At the heart of our project, we monitor the user’s sentiment by analyzing their facial expressions. Using this data, we suggest activities for the user. To help fight Zoom fatigue, the user can select from a few of retro-themed games: Coin Grab, Scavenger Hunt, and Asteroid Dodge. At the end of their Zoom meeting, the user can generate a report of their data throughout the meeting to monitor their emotional wellbeing. For corporate or educational users, we feature group sentiment analysis for Zoom calls, where administrators can monitor the overall sentiment of their meeting attendees. This data will empower meeting hosts to calibrate their behavior to their audience in real-time. The application also empowers Zoom students to understand their own sentiment during the call by growing a mario-style pipe when the user is joyous and shrinking the pipe when the user is angry.
 
-## How I built it
+## How we built it
 
 To analyze the user’s emotions as well as implement our retro-themed games, we first capture the user’s video feed using OpenCV. Once we have video frames from the webcam, our program uses computer vision tools to detect faces, queries the Google Cloud Vision API to track user sentiment, and simulates interactive games using OpenCV, PIL, and the object localization features in the Google Cloud Vision API. Finally, our modified webcam view is streamed through to a virtual camera that can interface with Zoom or any other video conferencing application.
 
@@ -59,7 +59,7 @@ Our group sentiment tracker was built by automating the collection of screenshot
 
 
 
-## Challenges I ran into
+## Challenges we ran into
 
 Our biggest issue was latency. When grabbing frames from the camera, the program seemed to grab 1-to-2 second old frames rather than the most recent frame. We tried a thread-based solution that continuously cleared the frame buffer, but that did not noticeably improve performance. 
 
@@ -69,7 +69,7 @@ We also had issues getting opencv to work as none of us have worked with that li
 
 Our final challenge was that we had trouble recording a video and getting it uploaded at the last minute. Our struggles with video editing and uploading had us quickly through together a demo.
 
-## Accomplishments that I'm proud of
+## Accomplishments that we are proud of
 
 Our team is proud of the virtual webcam implementation. We were able to successfully create an interactive app that modifies your video feed and plugs that feed directly into any app that uses the camera. We are also proud of the communication, teamwork, planning, and efficient github workflow we implemented. 
 
@@ -77,7 +77,7 @@ We are also proud of the overall aesthetic of the product, which was guided by t
 Most importantly, we are proud of the fact that we successfully built a tool that we can use in our Zoom meetings to stimulate engagement, something we think might be really fun for the student organizations we are a part of.
 
 
-## What I learned
+## What we learned
 
 - **Nilai**: I have used Python before, but I learned a lot about how to improve performance with multi-threading. I also gained experience working in a team on a git repository through solving merge conflicts in pull requests and keeping track of different branches. I also made by first GUI in Python!
 - **Jack**: I learned how to make requests to Google’s Vision APIs. 
@@ -92,23 +92,15 @@ The performance of Retro Zoom could be further improved. Our current bottleneck 
 As a product, we believe Retro Zoom has potential business value. Some potential customers would include schools and corporations hoping to increase Zoom engagement during prolonged work-from-home periods. Teachers or managers can monitor student's attention/sentiment during classes or meetings and have live updates. These users can use this data to gauge their audience’s emotions calibrate their presentation-style in real-time to be more engaging. For more casual users, we propose a freemium model where users can take breaks during their Zoom meetings to play a short game or groups of friends play games together and compete. This business model would draw in customers through free games and data analytics, and we would provide a premium plan that could unlock more games and deeper insights into the user’s emotional wellbeing during their Zoom meetings. 
 
 
+## How to use it:
 
-## Getting Started:
-
-First, install the following dependencies (you will need Python 3.8):
+First, install the following dependencies (you will need Python 3.8 on Windows):
 
 - [OBS Studio](https://obsproject.com/download)
 - [OBS Studio Virtual Camera Plug-in](https://obsproject.com/forum/resources/obs-virtualcam.949/)
 - [Python Libraries](requirements.txt) - These can be installed by running `pip install -r requirements.txt` in the
  command line
-    - [`pyvirtualcam` python library](https://github.com/letmaik/pyvirtualcam)
-    - numpy
-    - open cv 
-    - Pillow
-    - plotly
-    - pandas
-    - google cloud vision
-    - pynput
+- Google Cloud Vision API Key 
 
 Instructions:
 1. Set up a virtual camera in OBS Studio
@@ -116,4 +108,6 @@ Instructions:
 3. Run the Python code (`python control.py` in the command line)
 4. Start a Zoom meeting
 5. Select OBS as your camera
-6. You should see yourself, distorted and with a delay...
+6. You should see yourself with some visual additions.
+7. Press the `s`, `c`, and `a` to start games and `q` to quit.
+8. To do run the data analytics after a meeting, run the `create_visualization.py` script with the generated `productivity_data_YYYY-MM-DD.json` file.
