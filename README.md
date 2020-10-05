@@ -19,13 +19,7 @@
 
 ## Demos
 
-Devpost: https://devpost.com/software/retro-zoom
-
-Full video demo: https://youtu.be/WGBdyyA_2VQ
-
-Pitch video: https://youtu.be/KRNiMF1ev3Y
-
-Scavenger hunt demo: https://youtu.be/ETCymdAjdQI
+[Devpost Link](https://devpost.com/software/retro-zoom) | [Product Demo (Youtube)](https://youtu.be/WGBdyyA_2VQ) | [Pitch video (Youtube)](https://youtu.be/KRNiMF1ev3Y) | [Scavenger hunt game demo (Youtube)](https://youtu.be/ETCymdAjdQI)
 
 ## Inspiration
 
