@@ -1,13 +1,23 @@
-# vandy-hacks-2020: Retro Zoom
+# Retro Zoom (Vandy Hacks VII - 10/4/2020)
+
+**Description**: We made Zoom more engaging through computer vision, retro graphics, sentiment tracking, and data analytics.
+
+**Built by**: Nilai Vemula, Carly Bernstein, Jack Walton, Shiv Patel
+
+## Awards
+:trophy: Most creative virtual peer-to-peer collaboration engagement aid (Alliance Bernstein)
+
+:trophy: Best Use of Google Cloud: COVID-19 Hackathon Fund
+
+## Demos
+
+Devpost: https://devpost.com/software/retro-zoom
 
 Full video demo: https://youtu.be/WGBdyyA_2VQ
 
 Pitch video: https://youtu.be/KRNiMF1ev3Y
 
 Scavenger hunt demo: https://youtu.be/ETCymdAjdQI
-
-
-# Write-up
 
 ## Inspiration
 
@@ -76,7 +86,6 @@ As a product, we believe Retro Zoom has potential business value. Some potential
 
 
 
-Group Members: Nilai, Carly, Shiv, Jack
 
 Brainstorming:
 - GAN to make vid chat higher quality
