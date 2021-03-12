@@ -91,17 +91,14 @@ As a product, we believe Retro Zoom has potential business value. Some potential
 First, install the following dependencies (you will need Python 3.8 on Windows):
 
 - [OBS Studio](https://obsproject.com/download)
-- [OBS Studio Virtual Camera Plug-in](https://obsproject.com/forum/resources/obs-virtualcam.949/)
 - [Python Libraries](requirements.txt) - These can be installed by running `pip install -r requirements.txt` in the
  command line
 - Google Cloud Vision API Key 
 
 Instructions:
-1. Set up a virtual camera in OBS Studio
-2. Close OBS Studio
-3. Run the Python code (`python control.py` in the command line)
-4. Start a Zoom meeting
-5. Select OBS as your camera
-6. You should see yourself with some visual additions.
-7. Press the `s`, `c`, and `a` to start games and `q` to quit.
-8. To do run the data analytics after a meeting, run the `create_visualization.py` script with the generated `productivity_data_YYYY-MM-DD.json` file.
+1. Run the Python code (`python control.py` in the command line)
+2. Start a Zoom meeting
+3. Select OBS Virtual Camera as your camera
+4. You should see yourself with some visual additions.
+5. Press the `s`, `c`, and `a` to start games and `q` to quit.
+6. To do run the data analytics after a meeting, run the `create_visualization.py` script with the generated `productivity_data_YYYY-MM-DD.json` file.
